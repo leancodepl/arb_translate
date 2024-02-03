@@ -1,6 +1,7 @@
 name: arb_gpt_translator
 description: A sample command-line application.
 version: 1.0.0
+publish_to: none
 # repository: https://github.com/my_org/my_repo
 
 environment:
@@ -8,7 +9,19 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  args: ^2.4.2
+  file: ^6.1.4
+  flutter_tools:
+    sdk: flutter
   # path: ^1.8.0
+  google_generative_ai:
+    git:
+      url: "https://github.com/google/generative-ai-dart.git"
+      ref: main
+      path: pkgs/google_generative_ai
+
+dependency_overrides:
+  http: ^1.1.0
 
 dev_dependencies:
   lints: ^2.1.0
