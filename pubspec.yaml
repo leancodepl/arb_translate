@@ -10,15 +10,16 @@ environment:
 # Add regular dependencies here.
 dependencies:
   args: ^2.4.2
+  collection: ^1.18.0
   file: ^6.1.4
   flutter_tools:
     sdk: flutter
-  # path: ^1.8.0
   google_generative_ai:
     git:
       url: "https://github.com/google/generative-ai-dart.git"
       ref: main
       path: pkgs/google_generative_ai
+  yaml: ^3.1.2
 
 dependency_overrides:
   http: ^1.1.0

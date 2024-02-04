@@ -8,7 +8,7 @@
             "name": "arb_gpt_translator",
             "request": "launch",
             "type": "dart",
-            "args": [ "translate" ]
+            "args": [ "--arb-dir", "/Users/robert/Documents/inktica/app/lib/l10n" ]
         }
     ]
 }

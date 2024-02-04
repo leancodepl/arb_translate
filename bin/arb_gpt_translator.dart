@@ -1,9 +1,10 @@
-import 'package:arb_gpt_translator/src/commands/translate_command.dart';
-import 'package:args/command_runner.dart';
+import 'package:arb_gpt_translator/arb_gpt_translator.dart';
+import 'package:file/local.dart';
 
-Future<void> main(List<String> arguments) {
-  final runner = CommandRunner<void>('translator', '')
-    ..addCommand(TranslateCommand());
+Future<void> main(List<String> arguments) async {
+  final fileSystem = LocalFileSystem();
+  final argResults = parseArgs(arguments);
+  final options = TranslationOptions.parse(fileSystem, argResults);
 
-  return runner.run(arguments);
+  await translate(fileSystem, options);
 }
