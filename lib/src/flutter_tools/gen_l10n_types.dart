@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:arb_gpt_translator/src/flutter_tools/localizations_utils.dart';
+import 'package:arb_translate/src/flutter_tools/localizations_utils.dart';
 import 'package:file/file.dart';
 import 'package:intl/locale.dart';
 

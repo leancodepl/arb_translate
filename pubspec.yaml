@@ -1,4 +1,4 @@
-name: arb_gpt_translator
+name: arb_translate
 description: A sample command-line application.
 version: 1.0.0
 publish_to: none

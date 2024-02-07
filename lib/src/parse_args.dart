@@ -1,4 +1,4 @@
-import 'package:arb_gpt_translator/src/translation_options.dart';
+import 'package:arb_translate/src/translation_options.dart';
 import 'package:args/args.dart';
 
 ArgResults parseArgs(List<String> arguments) {

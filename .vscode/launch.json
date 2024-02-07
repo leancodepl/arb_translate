@@ -5,10 +5,9 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "arb_gpt_translator",
+            "name": "arb_translate",
             "request": "launch",
             "type": "dart",
-            "args": [ "--arb-dir", "/Users/robert/Documents/inktica/app/lib/l10n" ]
         }
     ]
 }

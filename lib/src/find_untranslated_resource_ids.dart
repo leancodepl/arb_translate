@@ -1,4 +1,4 @@
-import 'package:arb_gpt_translator/src/flutter_tools/gen_l10n_types.dart';
+import 'package:arb_translate/src/flutter_tools/gen_l10n_types.dart';
 
 List<String> findUntranslatedResourceIds(
   AppResourceBundle bundle,

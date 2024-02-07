@@ -1,4 +1,4 @@
-import 'package:arb_gpt_translator/arb_gpt_translator.dart';
+import 'package:arb_translate/arb_translate.dart';
 import 'package:file/local.dart';
 
 Future<void> main(List<String> arguments) async {
