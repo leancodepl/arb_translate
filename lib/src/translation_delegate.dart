@@ -31,7 +31,7 @@ class GeminiTranslationDelegate implements TranslationDelegate {
     Map<String, Object?> resources,
     LocaleInfo locale,
   ) async {
-    final batches = prepareBaches(resources);
+    final batches = prepareBatches(resources);
 
     final results = await Future.wait(
       batches.mapIndexed(
@@ -46,7 +46,7 @@ class GeminiTranslationDelegate implements TranslationDelegate {
     return {for (final result in results) ...result};
   }
 
-  List<Map<String, Object?>> prepareBaches(Map<String, Object?> resources) {
+  List<Map<String, Object?>> prepareBatches(Map<String, Object?> resources) {
     final batches = [<String, Object?>{}];
 
     var lastBatchSize = 0;
