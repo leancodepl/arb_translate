@@ -34,7 +34,7 @@ class TranslationOptions {
     if (fileSystem.file('l10n.yaml').existsSync()) {
       print(
         'Because l10n.yaml exists, the options defined there will be used '
-        'instead.\n To use the command line arguments, delete the l10n.yaml '
+        'instead.\nTo use the command line arguments, delete the l10n.yaml '
         'file in the Flutter project.\n\n',
       );
 
