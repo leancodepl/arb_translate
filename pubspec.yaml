@@ -4,6 +4,9 @@ version: 1.0.0
 publish_to: none
 # repository: https://github.com/my_org/my_repo
 
+executables:
+  arb_translate:
+
 environment:
   sdk: ^3.2.5
 
