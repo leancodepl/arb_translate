@@ -80,8 +80,8 @@ class GeminiTranslationDelegate implements TranslationDelegate {
     final encodedResources = JsonEncoder.withIndent('  ').convert(resources);
     final prompt = [
       Content.text(
-        'Translate the terms below to locale $locale. Terms are in ARB format. '
-        'Add other plural forms according to CLDR rules if necessary\n'
+        'Translate the terms below to locale "$locale". Terms are in ARB format. '
+        'Add other ICU plural forms according to CLDR rules if necessary\n'
         '$encodedResources',
       ),
     ];
