@@ -1,8 +1,6 @@
-// ignore_for_file: implementation_imports
-
 import 'dart:convert';
 
-import 'package:flutter_tools/src/localizations/gen_l10n_types.dart';
+import 'package:arb_gpt_translator/src/flutter_tools/gen_l10n_types.dart';
 
 Future<void> writeUpdatedBundle(
   AppResourceBundle bundle,

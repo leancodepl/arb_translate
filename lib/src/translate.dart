@@ -1,12 +1,10 @@
-// ignore_for_file: implementation_imports
-
 import 'package:arb_gpt_translator/src/find_untranslated_resource_ids.dart';
+import 'package:arb_gpt_translator/src/flutter_tools/gen_l10n_types.dart';
 import 'package:arb_gpt_translator/src/prepare_untranslated_resources.dart';
 import 'package:arb_gpt_translator/src/translation_delegate.dart';
 import 'package:arb_gpt_translator/src/translation_options.dart';
 import 'package:arb_gpt_translator/src/write_updated_bundle.dart';
 import 'package:file/file.dart';
-import 'package:flutter_tools/src/localizations/gen_l10n_types.dart';
 
 Future<void> translate(
   FileSystem fileSystem,

@@ -1,9 +1,7 @@
-// ignore_for_file: implementation_imports
-
 import 'dart:convert';
 
+import 'package:arb_gpt_translator/src/flutter_tools/localizations_utils.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter_tools/src/localizations/localizations_utils.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 abstract class TranslationDelegate {
