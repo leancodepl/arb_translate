@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:arb_translate/src/flutter_tools/localizations_utils.dart';
-import 'package:collection/collection.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 abstract class TranslationDelegate {
@@ -20,6 +19,7 @@ class GeminiTranslationDelegate implements TranslationDelegate {
 
   static const _batchSize = 1024;
   static const _maxRetryCount = 5;
+  static const _maxParalellQueries = 5;
   static const _queryBackoff = Duration(seconds: 5);
 
   final GenerativeModel _model;
@@ -31,17 +31,26 @@ class GeminiTranslationDelegate implements TranslationDelegate {
   ) async {
     final batches = prepareBatches(resources);
 
-    final results = await Future.wait(
-      batches.mapIndexed(
-        (index, batch) => translateBatch(
-          resources: batch,
-          locale: locale,
-          batchName: '${index + 1}/${batches.length}',
-        ),
-      ),
-    );
+    final results = <String, String>{};
 
-    return {for (final result in results) ...result};
+    for (var i = 0; i < batches.length; i += _maxParalellQueries) {
+      final batchResults = await Future.wait(
+        [
+          for (var j = i;
+              j < i + _maxParalellQueries && j < batches.length;
+              j++)
+            _translateBatch(
+              resources: batches[j],
+              locale: locale,
+              batchName: '${j + 1}/${batches.length}',
+            ),
+        ],
+      );
+
+      results.addAll({for (final results in batchResults) ...results});
+    }
+
+    return results;
   }
 
   List<Map<String, Object?>> prepareBatches(Map<String, Object?> resources) {
@@ -70,7 +79,7 @@ class GeminiTranslationDelegate implements TranslationDelegate {
     return batches;
   }
 
-  Future<Map<String, String>> translateBatch({
+  Future<Map<String, String>> _translateBatch({
     required Map<String, Object?> resources,
     required LocaleInfo locale,
     required String batchName,
