@@ -108,12 +108,11 @@ packages:
   google_generative_ai:
     dependency: "direct main"
     description:
-      path: "pkgs/google_generative_ai"
-      ref: main
-      resolved-ref: c3462e4a0644ee8c6e5deb0bd143a28543489905
-      url: "https://github.com/google/generative-ai-dart.git"
-    source: git
-    version: "0.0.0"
+      name: google_generative_ai
+      sha256: ee33bc3e576244351d62bd5d645df544ccd118a95e43aad154450e3c7bc13a5a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   http:
     dependency: "direct overridden"
     description:
