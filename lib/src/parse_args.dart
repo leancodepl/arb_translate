@@ -16,6 +16,23 @@ ArgResults parseArgs(List<String> arguments) {
     ..addOption(
       TranslationOptions.geminiApiKeyKey,
       help: 'Gemini API key used to make translation requests.',
+    )
+    ..addFlag(
+      TranslationOptions.useEscapingKey,
+      help: 'Whether or not to use escaping for messages.\n'
+          '\n'
+          'By default, this value is set to false for backwards compatibility. '
+          'Turning this flag on will cause the parser to treat any special '
+          'characters contained within pairs of single quotes as normal '
+          'strings and treat all consecutive pairs of single quotes as a '
+          'single quote character.',
+    )
+    ..addFlag(
+      TranslationOptions.relaxSyntaxKey,
+      help: 'When specified, the syntax will be relaxed so that the special '
+          'character "{" is treated as a string if it is not followed by a '
+          'valid placeholder and "}" is treated as a string if it does not '
+          'close any previous "{" that is treated as a special character.',
     );
 
   final results = parser.parse(arguments);

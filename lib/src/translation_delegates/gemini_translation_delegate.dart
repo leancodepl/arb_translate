@@ -1,20 +1,21 @@
 import 'dart:convert';
 
 import 'package:arb_translate/src/flutter_tools/localizations_utils.dart';
+import 'package:arb_translate/src/translation_delegates/translation_delegate.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
-abstract class TranslationDelegate {
-  Future<Map<String, String>> translate(
-    Map<String, Object?> resources,
-    LocaleInfo locale,
-  );
-}
-
-class GeminiTranslationDelegate implements TranslationDelegate {
-  GeminiTranslationDelegate(String apiKey)
-      : _model = GenerativeModel(
+class GeminiTranslationDelegate extends TranslationDelegate {
+  GeminiTranslationDelegate({
+    required String apiKey,
+    required bool useEscaping,
+    required bool relaxSyntax,
+  })  : _model = GenerativeModel(
           model: 'gemini-pro',
           apiKey: apiKey,
+        ),
+        super(
+          useEscaping: useEscaping,
+          relaxSyntax: relaxSyntax,
         );
 
   static const _batchSize = 1024;
@@ -104,6 +105,22 @@ class GeminiTranslationDelegate implements TranslationDelegate {
           for (final key in resources.keys.where((key) => !key.startsWith('@')))
             key: responseJson[key] as String,
         };
+
+        if (!validateResults(resources, result)) {
+          final retryName = '${retryCount + 1}/$_maxRetryCount';
+
+          print(
+            'Placeholder validation failed for batch $batchName, retrying $retryName...',
+          );
+
+          retryCount++;
+
+          if (retryCount > _maxRetryCount) {
+            throw Exception('Placeholder validation failed');
+          }
+
+          continue;
+        }
 
         print('Translated batch $batchName');
 

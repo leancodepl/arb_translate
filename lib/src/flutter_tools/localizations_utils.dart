@@ -1,4 +1,13 @@
+// Copyright 2014 The Flutter Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import 'package:file/file.dart';
 import 'package:meta/meta.dart';
+
+int sortFilesByPath(File a, File b) {
+  return a.path.compareTo(b.path);
+}
 
 /// Simple data class to hold parsed locale. Does not promise validity of any data.
 @immutable

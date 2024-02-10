@@ -9,11 +9,17 @@ class TranslationOptions {
     required this.arbDir,
     String? templateArbFile,
     required this.geminiApiKey,
-  }) : templateArbFile = templateArbFile ?? 'app_en.arb';
+    bool? useEscaping,
+    bool? relaxSyntax,
+  })  : templateArbFile = templateArbFile ?? 'app_en.arb',
+        useEscaping = useEscaping ?? false,
+        relaxSyntax = relaxSyntax ?? false;
 
   static const arbDirKey = 'arb-dir';
   static const templateArbFileKey = 'template-arb-file';
   static const geminiApiKeyKey = 'gemini-api-key';
+  static const useEscapingKey = 'use-escaping';
+  static const relaxSyntaxKey = 'relax-syntax';
 
   static final missingGeminiApiKeyError = Exception(
     'Missing Gemini API key. Provide the key using gemini-api-key argument '
@@ -24,6 +30,8 @@ class TranslationOptions {
   final String arbDir;
   final String templateArbFile;
   final String geminiApiKey;
+  final bool useEscaping;
+  final bool relaxSyntax;
 
   factory TranslationOptions.parse(
     FileSystem fileSystem,
@@ -86,7 +94,21 @@ class TranslationOptions {
       arbDir: _tryReadUri(yamlNode, arbDirKey)?.path ?? defaultArbDir,
       templateArbFile: _tryReadUri(yamlNode, templateArbFileKey)?.path,
       geminiApiKey: apiKey,
+      useEscaping: _tryReadBool(yamlNode, useEscapingKey),
+      relaxSyntax: _tryReadBool(yamlNode, relaxSyntaxKey),
     );
+  }
+
+  static bool? _tryReadBool(YamlMap yamlMap, String key) {
+    final Object? value = yamlMap[key];
+    if (value == null) {
+      return null;
+    }
+    if (value is! bool) {
+      throw Exception(
+          'Expected "$key" to have a bool value, instead was "$value"');
+    }
+    return value;
   }
 
   static Uri? _tryReadUri(YamlMap yamlMap, String key) {
@@ -138,6 +160,8 @@ class TranslationOptions {
       arbDir: argResults[arbDirKey] ?? defaultArbDir,
       templateArbFile: argResults[templateArbFileKey],
       geminiApiKey: apiKey,
+      useEscaping: argResults[useEscapingKey],
+      relaxSyntax: argResults[relaxSyntaxKey],
     );
   }
 }
