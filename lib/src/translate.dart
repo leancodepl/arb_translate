@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:arb_translate/src/find_untranslated_resource_ids.dart';
 import 'package:arb_translate/src/flutter_tools/gen_l10n_types.dart';
 import 'package:arb_translate/src/prepare_untranslated_resources.dart';
@@ -40,9 +42,7 @@ Future<void> _translateBundle({
       findUntranslatedResourceIds(bundle, templateBundle);
 
   if (untranslatedResourceIds.isEmpty) {
-    print(
-      'No terms to translate for locale ${bundle.locale}',
-    );
+    print('No terms to translate for locale ${bundle.locale}');
 
     return;
   } else {
@@ -57,10 +57,23 @@ Future<void> _translateBundle({
     untranslatedResourceIds,
   );
 
-  final translationResult = await translationDelegate.translate(
-    untranslatedResources,
-    bundle.locale,
-  );
+  Map<String, String> translationResult;
+
+  try {
+    translationResult = await translationDelegate.translate(
+      untranslatedResources,
+      bundle.locale,
+    );
+  } on UnsupportedUserLocationException catch (e) {
+    print(e.message);
+    exit(1);
+  } on ReponseParsingException catch (e) {
+    print(e.message);
+    exit(1);
+  } on PlaceholderValidationException catch (e) {
+    print(e.message);
+    exit(1);
+  }
 
   await writeUpdatedBundle(bundle, templateBundle, translationResult);
 }

@@ -4,6 +4,18 @@ import 'package:arb_translate/src/flutter_tools/localizations_utils.dart';
 import 'package:arb_translate/src/translation_delegates/translation_delegate.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
+class UnsupportedUserLocationException implements Exception {
+  String get message => 'Gemini API is not avilable in your location';
+}
+
+class ReponseParsingException implements Exception {
+  String get message => 'Failed to parse API response';
+}
+
+class PlaceholderValidationException implements Exception {
+  String get message => 'Placeholder validation failed';
+}
+
 class GeminiTranslationDelegate extends TranslationDelegate {
   GeminiTranslationDelegate({
     required String apiKey,
@@ -97,56 +109,99 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     var retryCount = 0;
 
     while (true) {
+      GenerateContentResponse response;
+
       try {
-        final response = await _model.generateContent(prompt);
-        final responseJson =
-            json.decode(response.text!) as Map<String, Object?>;
-        final result = {
-          for (final key in resources.keys.where((key) => !key.startsWith('@')))
-            key: responseJson[key] as String,
-        };
-
-        if (!validateResults(resources, result)) {
-          final retryName = '${retryCount + 1}/$_maxRetryCount';
-
+        response = await _model.generateContent(prompt);
+      } on FormatException catch (e) {
+        if (e.message.contains('code: 429')) {
           print(
-            'Placeholder validation failed for batch $batchName, retrying $retryName...',
-          );
-
-          retryCount++;
-
-          if (retryCount > _maxRetryCount) {
-            throw Exception('Placeholder validation failed');
-          }
-
-          continue;
-        }
-
-        print('Translated batch $batchName');
-
-        return result;
-      } catch (e) {
-        final retryName = '${retryCount + 1}/$_maxRetryCount';
-
-        if (e is FormatException && e.message.contains('code: 429')) {
-          print(
-            'Quota exceeded for batch $batchName, retrying $retryName in '
+            'Quota exceeded for batch $batchName, retrying in '
             '${_queryBackoff.inSeconds}s...',
           );
 
           await Future.delayed(_queryBackoff);
         } else {
-          print(
-            'Failed to translate batch $batchName, retrying $retryName...',
-          );
-
           retryCount++;
+
+          if (retryCount > _maxRetryCount) {
+            rethrow;
+          }
+
+          print(
+            'Failed to fetch translations for $batchName, retrying '
+            '$retryCount/$_maxRetryCount...',
+          );
         }
+
+        continue;
+      } on UnsupportedUserLocation catch (_) {
+        throw UnsupportedUserLocationException();
+      }
+
+      final result = _tryParseResponse(resources, response);
+
+      if (result == null) {
+        retryCount++;
 
         if (retryCount > _maxRetryCount) {
-          rethrow;
+          throw ReponseParsingException();
         }
+
+        print(
+          'Failed to parse response for $batchName, retrying '
+          '$retryCount/$_maxRetryCount...',
+        );
+
+        continue;
       }
+
+      if (!validateResults(resources, result)) {
+        retryCount++;
+
+        print(
+          'Placeholder validation failed for batch $batchName, retrying '
+          '$retryCount/$_maxRetryCount...',
+        );
+
+        if (retryCount > _maxRetryCount) {
+          throw PlaceholderValidationException();
+        }
+
+        continue;
+      }
+
+      print('Translated batch $batchName');
+
+      return result;
     }
+  }
+
+  Map<String, String>? _tryParseResponse(
+    Map<String, Object?> resources,
+    GenerateContentResponse response,
+  ) {
+    final text = response.text;
+
+    if (text == null) {
+      return null;
+    }
+
+    final responseJson = json.decode(text);
+
+    if (responseJson is! Map<String, Object?>) {
+      return null;
+    }
+
+    final messageResources =
+        resources.keys.where((key) => !key.startsWith('@'));
+
+    if (messageResources.any((key) => responseJson[key] is! String)) {
+      return null;
+    }
+
+    return {
+      for (final key in messageResources) key: responseJson[key] as String,
+    };
   }
 }
