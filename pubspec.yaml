@@ -1,7 +1,9 @@
 name: arb_translate
-description: A sample command-line application.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+description:
+  Command-line tool automatically adding missing message translations to ARB
+  files using Google Gemini LLM.
+version: 0.0.1
+repository: https://github.com/leancodepl/arb_translate
 
 executables:
   arb_translate:
@@ -9,7 +11,6 @@ executables:
 environment:
   sdk: ^3.2.5
 
-# Add regular dependencies here.
 dependencies:
   args: ^2.4.2
   file: ^6.1.4
