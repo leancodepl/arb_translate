@@ -35,6 +35,12 @@ Future<void> main(List<String> arguments) async {
   } on MissingGeminiApiKeyException catch (e) {
     print(e.message);
     exit(1);
+  } on MissingVertexAiProjectUrlException catch (e) {
+    print(e.message);
+    exit(1);
+  } on InvalidVertexAiProjectUrlException catch (e) {
+    print(e.message);
+    exit(1);
   }
 
   await translate(fileSystem, options);

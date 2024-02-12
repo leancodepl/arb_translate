@@ -13,11 +13,19 @@ Future<void> translate(
   FileSystem fileSystem,
   TranslationOptions options,
 ) async {
-  final translationDelegate = GeminiTranslationDelegate(
-    apiKey: options.geminiApiKey,
-    useEscaping: options.useEscaping,
-    relaxSyntax: options.relaxSyntax,
-  );
+  final translationDelegate = switch (options.modelProvider) {
+    ModelProvider.gemini => GeminiTranslationDelegate(
+        apiKey: options.apiKey,
+        useEscaping: options.useEscaping,
+        relaxSyntax: options.relaxSyntax,
+      ),
+    ModelProvider.vertexAi => GeminiTranslationDelegate.vertexAi(
+        apiKey: options.apiKey,
+        projectUrl: options.vertexAiProjectUrl.toString(),
+        useEscaping: options.useEscaping,
+        relaxSyntax: options.relaxSyntax,
+      ),
+  };
 
   final bundles =
       AppResourceBundleCollection(fileSystem.directory(options.arbDir)).bundles;

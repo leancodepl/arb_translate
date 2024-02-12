@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:arb_translate/src/flutter_tools/localizations_utils.dart';
 import 'package:arb_translate/src/translation_delegates/translation_delegate.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:http/http.dart';
 
 class UnsupportedUserLocationException implements Exception {
   String get message => 'Gemini API is not avilable in your location';
@@ -24,6 +25,22 @@ class GeminiTranslationDelegate extends TranslationDelegate {
   })  : _model = GenerativeModel(
           model: 'gemini-pro',
           apiKey: apiKey,
+          httpClient: null,
+        ),
+        super(
+          useEscaping: useEscaping,
+          relaxSyntax: relaxSyntax,
+        );
+
+  GeminiTranslationDelegate.vertexAi({
+    required String apiKey,
+    required String projectUrl,
+    required bool useEscaping,
+    required bool relaxSyntax,
+  })  : _model = GenerativeModel(
+          model: 'gemini-pro',
+          apiKey: apiKey,
+          httpClient: VertexHttpClient(projectUrl),
         ),
         super(
           useEscaping: useEscaping,
@@ -109,10 +126,13 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     var retryCount = 0;
 
     while (true) {
-      GenerateContentResponse response;
+      String response;
 
       try {
-        response = await _model.generateContent(prompt);
+        response = await _model
+            .generateContentStream(prompt)
+            .map((contentResponse) => contentResponse.text!)
+            .join();
       } on FormatException catch (e) {
         if (e.message.contains('code: 429')) {
           print(
@@ -179,17 +199,13 @@ class GeminiTranslationDelegate extends TranslationDelegate {
 
   Map<String, String>? _tryParseResponse(
     Map<String, Object?> resources,
-    GenerateContentResponse response,
+    String response,
   ) {
-    final text = response.text;
+    Map<String, Object?> responseJson;
 
-    if (text == null) {
-      return null;
-    }
-
-    final responseJson = json.decode(text);
-
-    if (responseJson is! Map<String, Object?>) {
+    try {
+      responseJson = json.decode(response);
+    } catch (e) {
       return null;
     }
 
@@ -203,5 +219,38 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     return {
       for (final key in messageResources) key: responseJson[key] as String,
     };
+  }
+}
+
+class VertexHttpClient extends BaseClient {
+  VertexHttpClient(this._projectUrl);
+
+  final String _projectUrl;
+  final _client = Client();
+
+  @override
+  Future<StreamedResponse> send(BaseRequest request) {
+    if (request is! Request ||
+        request.url.host != 'generativelanguage.googleapis.com') {
+      return _client.send(request);
+    }
+
+    final vertexRequest = Request(
+        'POST',
+        Uri.parse(request.url.toString().replaceAll(
+            'https://generativelanguage.googleapis.com/v1/models',
+            _projectUrl)))
+      ..bodyBytes = request.bodyBytes;
+
+    for (final header in request.headers.entries) {
+      if (header.key != 'x-goog-api-key') {
+        vertexRequest.headers[header.key] = header.value;
+      }
+    }
+
+    vertexRequest.headers['Authorization'] =
+        'Bearer ${request.headers['x-goog-api-key']}';
+
+    return _client.send(vertexRequest);
   }
 }

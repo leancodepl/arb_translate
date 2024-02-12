@@ -13,8 +13,10 @@ environment:
 
 dependencies:
   args: ^2.4.2
+  collection: ^1.18.0
   file: ^6.1.4
   google_generative_ai: ^0.1.0
+  http: ^1.2.0
   intl: ^0.18.1
   meta: ^1.10.0
   yaml: ^3.1.2

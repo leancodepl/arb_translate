@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:arb_translate/arb_translate.dart';
 import 'package:args/args.dart';
+import 'package:collection/collection.dart';
 
 class TranslateArgResults {
   const TranslateArgResults({
     required this.help,
-    required this.geminiApiKey,
+    required this.modelProvider,
+    required this.apiKey,
+    required this.vertexAiProjectUrl,
     required this.arbDir,
     required this.templateArbFile,
     required this.useEscaping,
@@ -14,7 +17,9 @@ class TranslateArgResults {
   });
 
   final bool? help;
-  final String? geminiApiKey;
+  final ModelProvider? modelProvider;
+  final String? vertexAiProjectUrl;
+  final String? apiKey;
   final String? arbDir;
   final String? templateArbFile;
   final bool? useEscaping;
@@ -23,6 +28,9 @@ class TranslateArgResults {
 
 class TranslateArgParser {
   static const _helpKey = 'help';
+  static const _modelProviderKey = 'model-provider';
+  static const _apiKeyKey = 'api-key';
+  static const _vertexAiProjectUrlKey = 'vertex-ai-project-url';
 
   final _parser = ArgParser(
       usageLineLength: stdout.hasTerminal ? stdout.terminalColumns : null)
@@ -33,8 +41,24 @@ class TranslateArgParser {
       negatable: false,
     )
     ..addOption(
-      TranslationOptions.geminiApiKeyKey,
-      help: 'Gemini API key used to make translation requests.',
+      _modelProviderKey,
+      help: 'The model provider to use for translation.',
+      allowed: ModelProvider.values.map((provider) => provider.key),
+      defaultsTo: ModelProvider.gemini.key,
+      allowedHelp: {
+        ModelProvider.gemini.key: 'Gemini',
+        ModelProvider.vertexAi.key:
+            'Vertex AI (useful for users in regions where Gemini is unavailable'
+                ' such as EU)',
+      },
+    )
+    ..addOption(
+      _apiKeyKey,
+      help: 'API key used to make translation requests.',
+    )
+    ..addOption(
+      _vertexAiProjectUrlKey,
+      help: 'The URL of the Vertex AI project to use for translation.',
     )
     ..addSeparator('ARB options:')
     ..addOption(
@@ -78,7 +102,11 @@ class TranslateArgParser {
 
     return TranslateArgResults(
       help: rawResults[_helpKey] as bool?,
-      geminiApiKey: rawResults[TranslationOptions.geminiApiKeyKey] as String?,
+      modelProvider: ModelProvider.values.firstWhereOrNull(
+        (provider) => provider.key == rawResults[_modelProviderKey],
+      ),
+      apiKey: rawResults[_apiKeyKey] as String?,
+      vertexAiProjectUrl: rawResults[_vertexAiProjectUrlKey] as String?,
       arbDir: rawResults[TranslationOptions.arbDirKey] as String?,
       templateArbFile:
           rawResults[TranslationOptions.templateArbFileKey] as String?,
