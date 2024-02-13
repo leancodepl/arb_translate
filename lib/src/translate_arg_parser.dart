@@ -10,6 +10,7 @@ class TranslateArgResults {
     required this.modelProvider,
     required this.apiKey,
     required this.vertexAiProjectUrl,
+    required this.context,
     required this.arbDir,
     required this.templateArbFile,
     required this.useEscaping,
@@ -18,8 +19,9 @@ class TranslateArgResults {
 
   final bool? help;
   final ModelProvider? modelProvider;
-  final String? vertexAiProjectUrl;
   final String? apiKey;
+  final String? vertexAiProjectUrl;
+  final String? context;
   final String? arbDir;
   final String? templateArbFile;
   final bool? useEscaping;
@@ -31,6 +33,7 @@ class TranslateArgParser {
   static const _modelProviderKey = 'model-provider';
   static const _apiKeyKey = 'api-key';
   static const _vertexAiProjectUrlKey = 'vertex-ai-project-url';
+  static const _contextKey = 'context';
 
   final _parser = ArgParser(
       usageLineLength: stdout.hasTerminal ? stdout.terminalColumns : null)
@@ -59,6 +62,10 @@ class TranslateArgParser {
     ..addOption(
       _vertexAiProjectUrlKey,
       help: 'The URL of the Vertex AI project to use for translation.',
+    )
+    ..addOption(
+      _contextKey,
+      help: 'The context to use for translation.',
     )
     ..addSeparator('ARB options:')
     ..addOption(
@@ -107,6 +114,7 @@ class TranslateArgParser {
       ),
       apiKey: rawResults[_apiKeyKey] as String?,
       vertexAiProjectUrl: rawResults[_vertexAiProjectUrlKey] as String?,
+      context: rawResults[_contextKey] as String?,
       arbDir: rawResults[TranslationOptions.arbDirKey] as String?,
       templateArbFile:
           rawResults[TranslationOptions.templateArbFileKey] as String?,

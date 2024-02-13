@@ -16,12 +16,14 @@ Future<void> translate(
   final translationDelegate = switch (options.modelProvider) {
     ModelProvider.gemini => GeminiTranslationDelegate(
         apiKey: options.apiKey,
+        context: options.context,
         useEscaping: options.useEscaping,
         relaxSyntax: options.relaxSyntax,
       ),
     ModelProvider.vertexAi => GeminiTranslationDelegate.vertexAi(
         apiKey: options.apiKey,
         projectUrl: options.vertexAiProjectUrl.toString(),
+        context: options.context,
         useEscaping: options.useEscaping,
         relaxSyntax: options.relaxSyntax,
       ),

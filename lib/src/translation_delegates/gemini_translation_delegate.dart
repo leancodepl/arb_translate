@@ -24,6 +24,7 @@ class PlaceholderValidationException implements Exception {
 class GeminiTranslationDelegate extends TranslationDelegate {
   GeminiTranslationDelegate({
     required String apiKey,
+    required String? context,
     required bool useEscaping,
     required bool relaxSyntax,
   })  : _model = GenerativeModel(
@@ -33,6 +34,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
         ),
         _useVertexAi = false,
         super(
+          context: context,
           useEscaping: useEscaping,
           relaxSyntax: relaxSyntax,
         );
@@ -40,6 +42,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
   GeminiTranslationDelegate.vertexAi({
     required String apiKey,
     required String projectUrl,
+    required String? context,
     required bool useEscaping,
     required bool relaxSyntax,
   })  : _model = GenerativeModel(
@@ -49,6 +52,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
         ),
         _useVertexAi = true,
         super(
+          context: context,
           useEscaping: useEscaping,
           relaxSyntax: relaxSyntax,
         );
@@ -124,8 +128,8 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     final encodedResources = JsonEncoder.withIndent('  ').convert(resources);
     final prompt = [
       Content.text(
-        'Translate the terms below to locale "$locale". Terms are in ARB format. '
-        'Add other ICU plural forms according to CLDR rules if necessary\n'
+        'Translate ARB messages for ${context ?? 'app'} to locale "$locale". '
+        'Add other ICU plural forms according to CLDR rules if necessary.\n\n'
         '$encodedResources',
       ),
     ];

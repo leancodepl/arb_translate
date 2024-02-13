@@ -5,7 +5,12 @@
             "name": "arb_translate",
             "request": "launch",
             "type": "dart",
-            "args": [ "--arb-dir", "example_l10n" ]
+            "args": [
+                "--arb-dir",
+                "example_l10n",
+                "--context",
+                "sporting goods store app"
+            ]
         }
     ]
 }

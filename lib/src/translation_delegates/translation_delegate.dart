@@ -6,10 +6,12 @@ import 'package:meta/meta.dart';
 
 abstract class TranslationDelegate {
   const TranslationDelegate({
+    required this.context,
     required this.useEscaping,
     required this.relaxSyntax,
   });
 
+  final String? context;
   final bool useEscaping;
   final bool relaxSyntax;
 

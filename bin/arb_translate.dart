@@ -41,6 +41,9 @@ Future<void> main(List<String> arguments) async {
   } on InvalidVertexAiProjectUrlException catch (e) {
     print(e.message);
     exit(1);
+  } on ContextTooLongException catch (e) {
+    print(e.message);
+    exit(1);
   }
 
   await translate(fileSystem, options);

@@ -1,3 +1,4 @@
 {
-  "common_months": "{count, plural, one{1 miesiąc} few{{count} miesiące} many{{count} miesięcy} other{{count} miesiąca}}"
+  "months": "{count, plural, one{1 miesiąc} few{{count} miesiące} many{{count} miesięcy} other{{count} miesiąca}}",
+  "bat": "Pałka"
 }

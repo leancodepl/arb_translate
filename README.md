@@ -24,6 +24,8 @@ steps:
    https://ai.google.dev/tutorials/setup
 2. Save your API token in the environment variable `ARB_TRANSLATE_API_KEY` or
    add `arb-translate-api-key: {your-api-key}` to `l10n.yaml` in your project
+3. (Optional) Add context of your application
+   `arb-translate-context: {your-app-context}` eg. "sporting goods store app"
 
 All other required parameters match `flutter_localizations` parameters and will
 be read from `l10n.yaml` file. You can override them using command arguments if
@@ -40,6 +42,8 @@ necessary. See `arb_translate --help` for more information.
       located
    2. `--template-arb-file` The template ARB file that will be used as the basis
       for translation
+   3. (Optional) Add context of your application `--context {your-app-context}`
+      eg. "sporting goods store app"
 
 See `arb_translate --help` for more information.
 

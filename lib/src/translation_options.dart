@@ -24,6 +24,12 @@ class InvalidVertexAiProjectUrlException implements Exception {
       '{project-id}/locations/{location-id}/publishers/google/models"';
 }
 
+class ContextTooLongException implements Exception {
+  String get message =>
+      'Context is too long. The maximum length of translation context is '
+      '${TranslationOptions.maxContextLength} characters';
+}
+
 enum ModelProvider {
   gemini('gemini'),
   vertexAi('vertex-ai');
@@ -38,6 +44,7 @@ class TranslationOptions {
     required this.modelProvider,
     required this.apiKey,
     required this.vertexAiProjectUrl,
+    required this.context,
     required this.arbDir,
     required String? templateArbFile,
     required bool? useEscaping,
@@ -51,9 +58,12 @@ class TranslationOptions {
   static const useEscapingKey = 'use-escaping';
   static const relaxSyntaxKey = 'relax-syntax';
 
+  static const maxContextLength = 32768;
+
   final ModelProvider modelProvider;
   final String apiKey;
   final Uri? vertexAiProjectUrl;
+  final String? context;
   final String arbDir;
   final String templateArbFile;
   final bool useEscaping;
@@ -94,10 +104,17 @@ class TranslationOptions {
       }
     }
 
+    final context = yamlResults.context ?? argResults.context;
+
+    if (context != null && context.length > maxContextLength) {
+      throw ContextTooLongException();
+    }
+
     return TranslationOptions(
       modelProvider: modelProvider,
       apiKey: apiKey,
       vertexAiProjectUrl: vertexAiProjectUrl,
+      context: context,
       arbDir: yamlResults.arbDir ??
           argResults.arbDir ??
           fileSystem.path.join('lib', 'l10n'),

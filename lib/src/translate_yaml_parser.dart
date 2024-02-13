@@ -7,6 +7,7 @@ class TranslateYamlResults {
     required this.modelProvider,
     required this.apiKey,
     required this.vertexAiProjectUrl,
+    required this.context,
     required this.arbDir,
     required this.templateArbFile,
     required this.useEscaping,
@@ -17,6 +18,7 @@ class TranslateYamlResults {
       : modelProvider = null,
         apiKey = null,
         vertexAiProjectUrl = null,
+        context = null,
         arbDir = null,
         templateArbFile = null,
         useEscaping = null,
@@ -25,6 +27,7 @@ class TranslateYamlResults {
   final ModelProvider? modelProvider;
   final String? apiKey;
   final String? vertexAiProjectUrl;
+  final String? context;
   final String? arbDir;
   final String? templateArbFile;
   final bool? useEscaping;
@@ -35,6 +38,7 @@ class TranslateYamlParser {
   static const _modelProviderKey = 'arb-translate-model-provider';
   static const _apiKeyKey = 'arb-translate-api-key';
   static const _vertexAiProjectUrlKey = 'arb-translate-vertex-ai-project-url';
+  static const _contextKey = 'arb-translate-context';
 
   TranslateYamlResults parse(File file) {
     if (!file.existsSync()) {
@@ -60,6 +64,7 @@ class TranslateYamlParser {
       arbDir: _tryReadUri(yamlNode, TranslationOptions.arbDirKey)?.path,
       vertexAiProjectUrl:
           _tryReadUri(yamlNode, _vertexAiProjectUrlKey).toString(),
+      context: _tryReadString(yamlNode, _contextKey),
       templateArbFile:
           _tryReadUri(yamlNode, TranslationOptions.templateArbFileKey)?.path,
       apiKey: _tryReadString(yamlNode, _apiKeyKey),
