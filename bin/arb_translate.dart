@@ -32,7 +32,7 @@ Future<void> main(List<String> arguments) async {
       yamlResults,
       argResults,
     );
-  } on MissingGeminiApiKeyException catch (e) {
+  } on MissingApiKeyException catch (e) {
     print(e.message);
     exit(1);
   } on MissingVertexAiProjectUrlException catch (e) {

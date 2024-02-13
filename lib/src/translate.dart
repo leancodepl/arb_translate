@@ -72,6 +72,9 @@ Future<void> _translateBundle({
       untranslatedResources,
       bundle.locale,
     );
+  } on InvalidApiKeyException catch (e) {
+    print(e.message);
+    exit(1);
   } on UnsupportedUserLocationException catch (e) {
     print(e.message);
     exit(1);

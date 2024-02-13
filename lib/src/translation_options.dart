@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:arb_translate/arb_translate.dart';
 import 'package:file/file.dart';
 
-class MissingGeminiApiKeyException implements Exception {
+class MissingApiKeyException implements Exception {
   String get message =>
       'Missing API key. Provide the key using api-key argument in command line '
       'or using arb-translate-api-key property in l10n.yaml file or using '
@@ -69,7 +69,7 @@ class TranslationOptions {
         Platform.environment['ARB_TRANSLATE_API_KEY'];
 
     if (apiKey == null) {
-      throw MissingGeminiApiKeyException();
+      throw MissingApiKeyException();
     }
 
     final modelProvider = yamlResults.modelProvider ??

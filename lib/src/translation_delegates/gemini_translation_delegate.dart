@@ -5,6 +5,10 @@ import 'package:arb_translate/src/translation_delegates/translation_delegate.dar
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:http/http.dart';
 
+class InvalidApiKeyException implements Exception {
+  String get message => 'Provided API key is not valid';
+}
+
 class UnsupportedUserLocationException implements Exception {
   String get message => 'Gemini API is not avilable in your location';
 }
@@ -27,6 +31,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
           apiKey: apiKey,
           httpClient: null,
         ),
+        _useVertexAi = false,
         super(
           useEscaping: useEscaping,
           relaxSyntax: relaxSyntax,
@@ -42,6 +47,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
           apiKey: apiKey,
           httpClient: VertexHttpClient(projectUrl),
         ),
+        _useVertexAi = true,
         super(
           useEscaping: useEscaping,
           relaxSyntax: relaxSyntax,
@@ -53,6 +59,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
   static const _queryBackoff = Duration(seconds: 5);
 
   final GenerativeModel _model;
+  final bool _useVertexAi;
 
   @override
   Future<Map<String, String>> translate(
@@ -126,13 +133,20 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     var retryCount = 0;
 
     while (true) {
-      String response;
+      String? response;
 
       try {
-        response = await _model
-            .generateContentStream(prompt)
-            .map((contentResponse) => contentResponse.text!)
-            .join();
+        // For Vertex AI we have to use `generateContentStream` method because
+        // generateContent doesn't respect http client we provide
+        // https://github.com/google/generative-ai-dart/issues/64
+        if (_useVertexAi) {
+          response = await _model
+              .generateContentStream(prompt)
+              .map((contentResponse) => contentResponse.text ?? '')
+              .join();
+        } else {
+          response = (await _model.generateContent(prompt)).text;
+        }
       } on FormatException catch (e) {
         if (e.message.contains('code: 429')) {
           print(
@@ -155,6 +169,8 @@ class GeminiTranslationDelegate extends TranslationDelegate {
         }
 
         continue;
+      } on InvalidApiKey catch (_) {
+        throw InvalidApiKeyException();
       } on UnsupportedUserLocation catch (_) {
         throw UnsupportedUserLocationException();
       }
@@ -199,8 +215,12 @@ class GeminiTranslationDelegate extends TranslationDelegate {
 
   Map<String, String>? _tryParseResponse(
     Map<String, Object?> resources,
-    String response,
+    String? response,
   ) {
+    if (response == null) {
+      return null;
+    }
+
     Map<String, Object?> responseJson;
 
     try {
@@ -229,14 +249,14 @@ class VertexHttpClient extends BaseClient {
   final _client = Client();
 
   @override
-  Future<StreamedResponse> send(BaseRequest request) {
+  Future<StreamedResponse> send(BaseRequest request) async {
     if (request is! Request ||
         request.url.host != 'generativelanguage.googleapis.com') {
       return _client.send(request);
     }
 
     final vertexRequest = Request(
-        'POST',
+        request.method,
         Uri.parse(request.url.toString().replaceAll(
             'https://generativelanguage.googleapis.com/v1/models',
             _projectUrl)))
@@ -251,6 +271,14 @@ class VertexHttpClient extends BaseClient {
     vertexRequest.headers['Authorization'] =
         'Bearer ${request.headers['x-goog-api-key']}';
 
-    return _client.send(vertexRequest);
+    final response = await _client.send(vertexRequest);
+
+    // `generateContentStream` method doesn't parse errors correctly. We have to
+    // handle at least invalid API key case so we have to handle it here.
+    if (response.statusCode == 401) {
+      throw InvalidApiKey('Invalid API Key');
+    }
+
+    return response;
   }
 }
