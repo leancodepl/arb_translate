@@ -47,7 +47,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
           relaxSyntax: relaxSyntax,
         );
 
-  static const _batchSize = 1024;
+  static const _batchSize = 4096;
   static const _maxRetryCount = 5;
   static const _maxParalellQueries = 5;
   static const _queryBackoff = Duration(seconds: 5);
