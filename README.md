@@ -93,11 +93,7 @@ If you want to know how we made this tool and what challenges we had, [read the 
 
 <p align="center">
    <a href="https://leancode.co/?utm_source=readme&utm_medium=arb_translate_package">
-      <picture>
-         <source media="(prefers-color-scheme: dark)" srcset="https://leancodepublic.blob.core.windows.net/public/dark-transparent-wide.png">
-         <source media="(prefers-color-scheme: light)" srcset="https://leancodepublic.blob.core.windows.net/public/light-transparent-wide.png">
-         <img alt="LeanCode" src="https://leancodepublic.blob.core.windows.net/public/wide.png" width="300"/>
-      </picture>
+      <img alt="LeanCode" src="https://leancodepublic.blob.core.windows.net/public/wide.png" width="300"/>
    </a>
    <p align="center">
    Built with ☕️ by <a href="https://leancode.co/?utm_source=readme&utm_medium=arb_translate_package">LeanCode</a>
