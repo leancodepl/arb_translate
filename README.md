@@ -2,8 +2,8 @@
 
 [![arb_translate on pub.dev][pub_badge]][pub_link]
 
-Command-line tool automatically adding missing message translations to ARB files
-using Google Gemini LLM.
+A command-line tool for automatically generating missing translations to ARB files
+using Google Gemini LLM by [LeanCode](https://leancode.co)
 
 ## Installation
 
@@ -85,3 +85,19 @@ $ arb_translate --arb-dir...
 
 [pub_badge]: https://img.shields.io/pub/v/arb_translate.svg
 [pub_link]: https://pub.dartlang.org/packages/arb_translate
+
+## Read more
+If you want to know how we made this tool and what challenges we had, [read the story](https://leancode.co/blog/flutter-app-localization-with-ai?utm_source=readme&utm_medium=arb_translate_package).
+
+##
+
+<p align="center">
+   <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://leancodepublic.blob.core.windows.net/public/dark-transparent-wide.png">
+      <source media="(prefers-color-scheme: light)" srcset="https://leancodepublic.blob.core.windows.net/public/light-transparent-wide.png">
+      <img alt="LeanCode" src="https://leancodepublic.blob.core.windows.net/public/wide.png" width="300"/>
+   </picture>
+   <p align="center">
+   Built with ☕️ by <a href="https://leancode.co">LeanCode</a>
+   </p>
+</p>
