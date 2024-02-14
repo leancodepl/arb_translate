@@ -24,38 +24,28 @@ class PlaceholderValidationException implements Exception {
 class GeminiTranslationDelegate extends TranslationDelegate {
   GeminiTranslationDelegate({
     required String apiKey,
-    required String? context,
-    required bool useEscaping,
-    required bool relaxSyntax,
+    required super.context,
+    required super.useEscaping,
+    required super.relaxSyntax,
   })  : _model = GenerativeModel(
           model: 'gemini-pro',
           apiKey: apiKey,
           httpClient: null,
         ),
-        _useVertexAi = false,
-        super(
-          context: context,
-          useEscaping: useEscaping,
-          relaxSyntax: relaxSyntax,
-        );
+        _useVertexAi = false;
 
   GeminiTranslationDelegate.vertexAi({
     required String apiKey,
     required String projectUrl,
-    required String? context,
-    required bool useEscaping,
-    required bool relaxSyntax,
+    required super.context,
+    required super.useEscaping,
+    required super.relaxSyntax,
   })  : _model = GenerativeModel(
           model: 'gemini-pro',
           apiKey: apiKey,
           httpClient: VertexHttpClient(projectUrl),
         ),
-        _useVertexAi = true,
-        super(
-          context: context,
-          useEscaping: useEscaping,
-          relaxSyntax: relaxSyntax,
-        );
+        _useVertexAi = true;
 
   static const _batchSize = 4096;
   static const _maxRetryCount = 5;
