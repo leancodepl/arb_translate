@@ -27,12 +27,10 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     required super.context,
     required super.useEscaping,
     required super.relaxSyntax,
-  })  : _model = GenerativeModel(
+  }) : _model = GenerativeModel(
           model: 'gemini-pro',
           apiKey: apiKey,
-          httpClient: null,
-        ),
-        _useVertexAi = false;
+        );
 
   GeminiTranslationDelegate.vertexAi({
     required String apiKey,
@@ -40,12 +38,11 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     required super.context,
     required super.useEscaping,
     required super.relaxSyntax,
-  })  : _model = GenerativeModel(
+  }) : _model = GenerativeModel(
           model: 'gemini-pro',
           apiKey: apiKey,
           httpClient: VertexHttpClient(projectUrl),
-        ),
-        _useVertexAi = true;
+        );
 
   static const _batchSize = 4096;
   static const _maxRetryCount = 5;
@@ -53,7 +50,6 @@ class GeminiTranslationDelegate extends TranslationDelegate {
   static const _queryBackoff = Duration(seconds: 5);
 
   final GenerativeModel _model;
-  final bool _useVertexAi;
 
   @override
   Future<Map<String, String>> translate(
@@ -130,17 +126,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
       String? response;
 
       try {
-        // For Vertex AI we have to use `generateContentStream` method because
-        // generateContent doesn't respect http client we provide
-        // https://github.com/google/generative-ai-dart/issues/64
-        if (_useVertexAi) {
-          response = await _model
-              .generateContentStream(prompt)
-              .map((contentResponse) => contentResponse.text ?? '')
-              .join();
-        } else {
-          response = (await _model.generateContent(prompt)).text;
-        }
+        response = (await _model.generateContent(prompt)).text;
       } on FormatException catch (e) {
         if (e.message.contains('code: 429')) {
           print(
@@ -243,7 +229,7 @@ class VertexHttpClient extends BaseClient {
   final _client = Client();
 
   @override
-  Future<StreamedResponse> send(BaseRequest request) async {
+  Future<StreamedResponse> send(BaseRequest request) {
     if (request is! Request ||
         request.url.host != 'generativelanguage.googleapis.com') {
       return _client.send(request);
@@ -265,14 +251,6 @@ class VertexHttpClient extends BaseClient {
     vertexRequest.headers['Authorization'] =
         'Bearer ${request.headers['x-goog-api-key']}';
 
-    final response = await _client.send(vertexRequest);
-
-    // `generateContentStream` method doesn't parse errors correctly. We have to
-    // handle at least invalid API key case so we have to handle it here.
-    if (response.statusCode == 401) {
-      throw InvalidApiKey('Invalid API Key');
-    }
-
-    return response;
+    return _client.send(vertexRequest);
   }
 }

@@ -109,10 +109,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_generative_ai
-      sha256: ee33bc3e576244351d62bd5d645df544ccd118a95e43aad154450e3c7bc13a5a
+      sha256: "2c8cb557c196487c5624da02a0914935e48874112a8201cb7b9379c79cd3bde7"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.2.0"
   http:
     dependency: "direct main"
     description:
