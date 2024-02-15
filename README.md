@@ -3,7 +3,7 @@
 [![arb_translate on pub.dev][pub_badge]][pub_link]
 
 A command-line tool for automatically generating missing translations to ARB files
-using Google Gemini LLM by [LeanCode](https://leancode.co/?utm_source=readme&utm_medium=arb_translate_package)
+using Google Gemini API by [LeanCode](https://leancode.co/?utm_source=readme&utm_medium=arb_translate_package)
 
 ## Installation
 
