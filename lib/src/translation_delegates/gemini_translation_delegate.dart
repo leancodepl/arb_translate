@@ -10,7 +10,8 @@ class InvalidApiKeyException implements Exception {
 }
 
 class UnsupportedUserLocationException implements Exception {
-  String get message => 'Gemini API is not avilable in your location';
+  String get message => 'Gemini API is not avilable in your location. Use '
+      'Vertex AI model provider. See the documentation for more information';
 }
 
 class ReponseParsingException implements Exception {
