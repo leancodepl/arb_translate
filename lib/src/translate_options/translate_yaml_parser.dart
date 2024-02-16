@@ -61,15 +61,15 @@ class TranslateYamlParser {
 
     return TranslateYamlResults(
       modelProvider: _tryReadModelProvider(yamlNode, _modelProviderKey),
-      arbDir: _tryReadUri(yamlNode, TranslationOptions.arbDirKey)?.path,
+      arbDir: _tryReadUri(yamlNode, TranslateOptions.arbDirKey)?.path,
       vertexAiProjectUrl:
           _tryReadUri(yamlNode, _vertexAiProjectUrlKey).toString(),
       context: _tryReadString(yamlNode, _contextKey),
       templateArbFile:
-          _tryReadUri(yamlNode, TranslationOptions.templateArbFileKey)?.path,
+          _tryReadUri(yamlNode, TranslateOptions.templateArbFileKey)?.path,
       apiKey: _tryReadString(yamlNode, _apiKeyKey),
-      useEscaping: _tryReadBool(yamlNode, TranslationOptions.useEscapingKey),
-      relaxSyntax: _tryReadBool(yamlNode, TranslationOptions.relaxSyntaxKey),
+      useEscaping: _tryReadBool(yamlNode, TranslateOptions.useEscapingKey),
+      relaxSyntax: _tryReadBool(yamlNode, TranslateOptions.relaxSyntaxKey),
     );
   }
 

@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:arb_translate/src/find_untranslated_resource_ids.dart';
 import 'package:arb_translate/src/flutter_tools/gen_l10n_types.dart';
 import 'package:arb_translate/src/prepare_untranslated_resources.dart';
+import 'package:arb_translate/src/translate_options/translate_options.dart';
 import 'package:arb_translate/src/translation_delegates/gemini_translation_delegate.dart';
 import 'package:arb_translate/src/translation_delegates/translation_delegate.dart';
-import 'package:arb_translate/src/translation_options.dart';
 import 'package:arb_translate/src/write_updated_bundle.dart';
 import 'package:file/file.dart';
 
 Future<void> translate(
   FileSystem fileSystem,
-  TranslationOptions options,
+  TranslateOptions options,
 ) async {
   final translationDelegate = switch (options.modelProvider) {
     ModelProvider.gemini => GeminiTranslationDelegate(

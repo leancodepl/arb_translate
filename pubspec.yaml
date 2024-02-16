@@ -2,7 +2,7 @@ name: arb_translate
 description: >-
   A command-line tool for automatically generating missing translations to ARB
   files using Google Gemini API by LeanCode.
-version: 0.0.4
+version: 0.1.0
 repository: https://github.com/leancodepl/arb_translate
 issue_tracker: https://github.com/leancodepl/arb_translate/issues
 topics:

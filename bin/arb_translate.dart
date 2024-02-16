@@ -24,13 +24,13 @@ Future<void> main(List<String> arguments) async {
     exit(0);
   }
 
-  TranslationOptions options;
+  TranslateOptions options;
 
   try {
-    options = TranslationOptions.resolve(
+    options = TranslateOptions.resolve(
       fileSystem,
-      yamlResults,
       argResults,
+      yamlResults,
     );
   } on MissingApiKeyException catch (e) {
     print(e.message);

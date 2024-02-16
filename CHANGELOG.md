@@ -1,4 +1,6 @@
-## 0.0.4
+## 0.1.0
+- Fix configuration type precedence. Command arguments > l10n.yaml properties >
+  Environment variables
 - Catch invalid Vertex AI token exception
 
 ## 0.0.3

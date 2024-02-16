@@ -27,7 +27,7 @@ class InvalidVertexAiProjectUrlException implements Exception {
 class ContextTooLongException implements Exception {
   String get message =>
       'Context is too long. The maximum length of translation context is '
-      '${TranslationOptions.maxContextLength} characters';
+      '${TranslateOptions.maxContextLength} characters';
 }
 
 enum ModelProvider {
@@ -39,8 +39,8 @@ enum ModelProvider {
   final String key;
 }
 
-class TranslationOptions {
-  const TranslationOptions({
+class TranslateOptions {
+  const TranslateOptions({
     required this.modelProvider,
     required this.apiKey,
     required this.vertexAiProjectUrl,
@@ -69,25 +69,25 @@ class TranslationOptions {
   final bool useEscaping;
   final bool relaxSyntax;
 
-  factory TranslationOptions.resolve(
+  factory TranslateOptions.resolve(
     FileSystem fileSystem,
-    TranslateYamlResults yamlResults,
     TranslateArgResults argResults,
+    TranslateYamlResults yamlResults,
   ) {
-    final apiKey = yamlResults.apiKey ??
-        argResults.apiKey ??
+    final apiKey = argResults.apiKey ??
+        yamlResults.apiKey ??
         Platform.environment['ARB_TRANSLATE_API_KEY'];
 
     if (apiKey == null) {
       throw MissingApiKeyException();
     }
 
-    final modelProvider = yamlResults.modelProvider ??
-        argResults.modelProvider ??
+    final modelProvider = argResults.modelProvider ??
+        yamlResults.modelProvider ??
         ModelProvider.gemini;
 
     final vertexAiProjectUrlString =
-        yamlResults.vertexAiProjectUrl ?? argResults.vertexAiProjectUrl;
+        argResults.vertexAiProjectUrl ?? yamlResults.vertexAiProjectUrl;
     final Uri? vertexAiProjectUrl = vertexAiProjectUrlString != null
         ? Uri.tryParse(vertexAiProjectUrlString)
         : null;
@@ -104,24 +104,24 @@ class TranslationOptions {
       }
     }
 
-    final context = yamlResults.context ?? argResults.context;
+    final context = argResults.context ?? yamlResults.context;
 
     if (context != null && context.length > maxContextLength) {
       throw ContextTooLongException();
     }
 
-    return TranslationOptions(
+    return TranslateOptions(
       modelProvider: modelProvider,
       apiKey: apiKey,
       vertexAiProjectUrl: vertexAiProjectUrl,
       context: context,
-      arbDir: yamlResults.arbDir ??
-          argResults.arbDir ??
+      arbDir: argResults.arbDir ??
+          yamlResults.arbDir ??
           fileSystem.path.join('lib', 'l10n'),
       templateArbFile:
-          yamlResults.templateArbFile ?? argResults.templateArbFile,
-      useEscaping: yamlResults.useEscaping ?? argResults.useEscaping,
-      relaxSyntax: yamlResults.relaxSyntax ?? argResults.relaxSyntax,
+          argResults.templateArbFile ?? yamlResults.templateArbFile,
+      useEscaping: argResults.useEscaping ?? yamlResults.useEscaping,
+      relaxSyntax: argResults.relaxSyntax ?? yamlResults.relaxSyntax,
     );
   }
 }

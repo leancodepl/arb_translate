@@ -69,17 +69,17 @@ class TranslateArgParser {
     )
     ..addSeparator('ARB options:')
     ..addOption(
-      TranslationOptions.arbDirKey,
+      TranslateOptions.arbDirKey,
       help: 'The directory where the template and translated arb files are '
           'located.',
     )
     ..addOption(
-      TranslationOptions.templateArbFileKey,
+      TranslateOptions.templateArbFileKey,
       help: 'The template arb file that will be used as the basis for '
           'translation.',
     )
     ..addFlag(
-      TranslationOptions.useEscapingKey,
+      TranslateOptions.useEscapingKey,
       help: 'Whether or not to use escaping for messages.\n'
           '\n'
           'By default, this value is set to false for backwards compatibility. '
@@ -89,7 +89,7 @@ class TranslateArgParser {
           'single quote character.',
     )
     ..addFlag(
-      TranslationOptions.relaxSyntaxKey,
+      TranslateOptions.relaxSyntaxKey,
       help: 'When specified, the syntax will be relaxed so that the special '
           'character "{" is treated as a string if it is not followed by a '
           'valid placeholder and "}" is treated as a string if it does not '
@@ -115,11 +115,11 @@ class TranslateArgParser {
       apiKey: rawResults[_apiKeyKey] as String?,
       vertexAiProjectUrl: rawResults[_vertexAiProjectUrlKey] as String?,
       context: rawResults[_contextKey] as String?,
-      arbDir: rawResults[TranslationOptions.arbDirKey] as String?,
+      arbDir: rawResults[TranslateOptions.arbDirKey] as String?,
       templateArbFile:
-          rawResults[TranslationOptions.templateArbFileKey] as String?,
-      useEscaping: rawResults[TranslationOptions.useEscapingKey] as bool?,
-      relaxSyntax: rawResults[TranslationOptions.relaxSyntaxKey] as bool?,
+          rawResults[TranslateOptions.templateArbFileKey] as String?,
+      useEscaping: rawResults[TranslateOptions.useEscapingKey] as bool?,
+      relaxSyntax: rawResults[TranslateOptions.relaxSyntaxKey] as bool?,
     );
   }
 }
