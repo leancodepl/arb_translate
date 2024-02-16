@@ -1,3 +1,6 @@
+## 0.0.4
+- Catch invalid Vertex AI token exception
+
 ## 0.0.3
 - Update `google_generative_ai` dependency
 - Remove workaround for http client override issue in `google_generative_ai`
@@ -11,4 +14,4 @@
 
 ## 0.0.1
 
-- Initial version.
+- Initial version

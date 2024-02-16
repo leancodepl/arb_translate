@@ -152,6 +152,13 @@ class GeminiTranslationDelegate extends TranslationDelegate {
         continue;
       } on InvalidApiKey catch (_) {
         throw InvalidApiKeyException();
+      } on ServerException catch (e) {
+        if (e.message
+            .startsWith('Request had invalid authentication credentials.')) {
+          throw InvalidApiKeyException();
+        }
+
+        rethrow;
       } on UnsupportedUserLocation catch (_) {
         throw UnsupportedUserLocationException();
       }
