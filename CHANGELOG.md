@@ -1,3 +1,6 @@
+## 0.1.2
+- Fix settings model provider in `l10n.yaml`
+
 ## 0.1.1
 - Fix citation parsing issue
   ([#1](https://github.com/leancodepl/arb_translate/issues/1))

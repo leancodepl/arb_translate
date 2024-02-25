@@ -107,11 +107,15 @@ class TranslateArgParser {
       );
     }
 
+    final modelProvider = rawResults.wasParsed(_modelProviderKey)
+        ? ModelProvider.values.firstWhereOrNull(
+            (provider) => provider.key == rawResults[_modelProviderKey],
+          )
+        : null;
+
     return TranslateArgResults(
       help: rawResults[_helpKey] as bool?,
-      modelProvider: ModelProvider.values.firstWhereOrNull(
-        (provider) => provider.key == rawResults[_modelProviderKey],
-      ),
+      modelProvider: modelProvider,
       apiKey: rawResults[_apiKeyKey] as String?,
       vertexAiProjectUrl: rawResults[_vertexAiProjectUrlKey] as String?,
       context: rawResults[_contextKey] as String?,
