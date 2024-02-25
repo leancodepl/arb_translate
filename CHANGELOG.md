@@ -1,3 +1,8 @@
+## 0.1.1
+- Fix citation parsing issue
+  ([#1](https://github.com/leancodepl/arb_translate/issues/1))
+- Update `google_generative_ai` dependency
+
 ## 0.1.0
 - Fix configuration type precedence. Command arguments > l10n.yaml properties >
   Environment variables
