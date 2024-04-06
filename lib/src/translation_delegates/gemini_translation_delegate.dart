@@ -1,24 +1,37 @@
 import 'dart:convert';
 
 import 'package:arb_translate/src/flutter_tools/localizations_utils.dart';
+import 'package:arb_translate/src/translate_exception.dart';
 import 'package:arb_translate/src/translation_delegates/translation_delegate.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:http/http.dart';
 
-class InvalidApiKeyException implements Exception {
+class InvalidApiKeyException implements TranslateException {
+  @override
   String get message => 'Provided API key is not valid';
 }
 
-class UnsupportedUserLocationException implements Exception {
+class UnsupportedUserLocationException implements TranslateException {
+  @override
   String get message => 'Gemini API is not avilable in your location. Use '
       'Vertex AI model provider. See the documentation for more information';
 }
 
-class ReponseParsingException implements Exception {
+class SafetyException implements TranslateException {
+  @override
+  String get message =>
+      'Translation failed due to safety settings. You can disable safety '
+      'settings using --disable-safety flag or with '
+      'arb-translate-disable-safety: true in l10n.yaml';
+}
+
+class ReponseParsingException implements TranslateException {
+  @override
   String get message => 'Failed to parse API response';
 }
 
-class PlaceholderValidationException implements Exception {
+class PlaceholderValidationException implements TranslateException {
+  @override
   String get message => 'Placeholder validation failed';
 }
 
@@ -26,22 +39,26 @@ class GeminiTranslationDelegate extends TranslationDelegate {
   GeminiTranslationDelegate({
     required String apiKey,
     required super.context,
+    required bool disableSafety,
     required super.useEscaping,
     required super.relaxSyntax,
   }) : _model = GenerativeModel(
           model: 'gemini-pro',
           apiKey: apiKey,
+          safetySettings: disableSafety ? _disabledSafetySettings : [],
         );
 
   GeminiTranslationDelegate.vertexAi({
     required String apiKey,
     required String projectUrl,
     required super.context,
+    required bool disableSafety,
     required super.useEscaping,
     required super.relaxSyntax,
   }) : _model = GenerativeModel(
           model: 'gemini-pro',
           apiKey: apiKey,
+          safetySettings: disableSafety ? _disabledSafetySettings : [],
           httpClient: VertexHttpClient(projectUrl),
         );
 
@@ -49,6 +66,15 @@ class GeminiTranslationDelegate extends TranslationDelegate {
   static const _maxRetryCount = 5;
   static const _maxParalellQueries = 5;
   static const _queryBackoff = Duration(seconds: 5);
+
+  static final _disabledSafetySettings = [
+    HarmCategory.harassment,
+    HarmCategory.hateSpeech,
+    HarmCategory.sexuallyExplicit,
+    HarmCategory.dangerousContent,
+  ]
+      .map((category) => SafetySetting(category, HarmBlockThreshold.none))
+      .toList();
 
   final GenerativeModel _model;
 
@@ -161,6 +187,12 @@ class GeminiTranslationDelegate extends TranslationDelegate {
         rethrow;
       } on UnsupportedUserLocation catch (_) {
         throw UnsupportedUserLocationException();
+      } on GenerativeAIException catch (e) {
+        if (e.message.startsWith('Candidate was blocked due to safety')) {
+          throw SafetyException();
+        }
+
+        rethrow;
       }
 
       final result = _tryParseResponse(resources, response);

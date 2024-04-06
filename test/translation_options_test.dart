@@ -13,6 +13,7 @@ void main() {
           const argResultsApiKey = 'argResultsApiKey';
           const argResultsVertexAiProjectUrl =
               'https://argResultsVertexAiProjectUrl/models';
+          const argResultsDisableSafety = true;
           const argResultsContext = 'argResultsContext';
           const argResultsArbDir = 'argResultsArbDir';
           const argResultsTemplateArbFile = 'argResultsTemplateArbFile';
@@ -24,6 +25,7 @@ void main() {
             modelProvider: argResultsModelProvider,
             apiKey: argResultsApiKey,
             vertexAiProjectUrl: argResultsVertexAiProjectUrl,
+            disableSafety: argResultsDisableSafety,
             context: argResultsContext,
             arbDir: argResultsArbDir,
             templateArbFile: argResultsTemplateArbFile,
@@ -34,6 +36,7 @@ void main() {
             modelProvider: ModelProvider.gemini,
             apiKey: 'yamlResultsApiKey',
             vertexAiProjectUrl: 'htts://yamlResultsVertexAiProjectUrl/models',
+            disableSafety: !argResultsDisableSafety,
             context: 'yamlResultsContext',
             arbDir: 'yamlResultsArbDir',
             templateArbFile: 'yamlResultsTemplateArbFile',
@@ -64,6 +67,11 @@ void main() {
                   (options) => options.vertexAiProjectUrl,
                   'vertexAiProjectUrl',
                   Uri.parse(argResultsVertexAiProjectUrl),
+                )
+                .having(
+                  (options) => options.disableSafety,
+                  'disableSafety',
+                  argResultsDisableSafety,
                 )
                 .having(
                   (options) => options.context,

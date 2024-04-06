@@ -10,6 +10,7 @@ class TranslateArgResults {
     required this.modelProvider,
     required this.apiKey,
     required this.vertexAiProjectUrl,
+    required this.disableSafety,
     required this.context,
     required this.arbDir,
     required this.templateArbFile,
@@ -21,6 +22,7 @@ class TranslateArgResults {
   final ModelProvider? modelProvider;
   final String? apiKey;
   final String? vertexAiProjectUrl;
+  final bool? disableSafety;
   final String? context;
   final String? arbDir;
   final String? templateArbFile;
@@ -33,6 +35,7 @@ class TranslateArgParser {
   static const _modelProviderKey = 'model-provider';
   static const _apiKeyKey = 'api-key';
   static const _vertexAiProjectUrlKey = 'vertex-ai-project-url';
+  static const _disableSafetyKey = 'disable-safety';
   static const _contextKey = 'context';
 
   final _parser = ArgParser(
@@ -62,6 +65,11 @@ class TranslateArgParser {
     ..addOption(
       _vertexAiProjectUrlKey,
       help: 'The URL of the Vertex AI project to use for translation.',
+    )
+    ..addFlag(
+      _disableSafetyKey,
+      help:
+          'Whether or not to disable content safety settings for translation.',
     )
     ..addOption(
       _contextKey,
@@ -118,6 +126,7 @@ class TranslateArgParser {
       modelProvider: modelProvider,
       apiKey: rawResults[_apiKeyKey] as String?,
       vertexAiProjectUrl: rawResults[_vertexAiProjectUrlKey] as String?,
+      disableSafety: _getBoolIfParsed(rawResults, _disableSafetyKey),
       context: rawResults[_contextKey] as String?,
       arbDir: rawResults[TranslateOptions.arbDirKey] as String?,
       templateArbFile:
@@ -125,5 +134,9 @@ class TranslateArgParser {
       useEscaping: rawResults[TranslateOptions.useEscapingKey] as bool?,
       relaxSyntax: rawResults[TranslateOptions.relaxSyntaxKey] as bool?,
     );
+  }
+
+  bool? _getBoolIfParsed(ArgResults results, String key) {
+    return results.wasParsed(key) ? results[key] as bool : null;
   }
 }

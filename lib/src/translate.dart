@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:arb_translate/src/find_untranslated_resource_ids.dart';
 import 'package:arb_translate/src/flutter_tools/gen_l10n_types.dart';
 import 'package:arb_translate/src/prepare_untranslated_resources.dart';
+import 'package:arb_translate/src/translate_exception.dart';
 import 'package:arb_translate/src/translate_options/translate_options.dart';
 import 'package:arb_translate/src/translation_delegates/gemini_translation_delegate.dart';
 import 'package:arb_translate/src/translation_delegates/translation_delegate.dart';
@@ -17,6 +18,7 @@ Future<void> translate(
     ModelProvider.gemini => GeminiTranslationDelegate(
         apiKey: options.apiKey,
         context: options.context,
+        disableSafety: options.disableSafety,
         useEscaping: options.useEscaping,
         relaxSyntax: options.relaxSyntax,
       ),
@@ -24,6 +26,7 @@ Future<void> translate(
         apiKey: options.apiKey,
         projectUrl: options.vertexAiProjectUrl.toString(),
         context: options.context,
+        disableSafety: options.disableSafety,
         useEscaping: options.useEscaping,
         relaxSyntax: options.relaxSyntax,
       ),
@@ -74,16 +77,7 @@ Future<void> _translateBundle({
       untranslatedResources,
       bundle.locale,
     );
-  } on InvalidApiKeyException catch (e) {
-    print(e.message);
-    exit(1);
-  } on UnsupportedUserLocationException catch (e) {
-    print(e.message);
-    exit(1);
-  } on ReponseParsingException catch (e) {
-    print(e.message);
-    exit(1);
-  } on PlaceholderValidationException catch (e) {
+  } on TranslateException catch (e) {
     print(e.message);
     exit(1);
   }

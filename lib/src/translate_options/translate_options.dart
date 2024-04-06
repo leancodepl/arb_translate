@@ -1,30 +1,35 @@
 import 'dart:io';
 
 import 'package:arb_translate/arb_translate.dart';
+import 'package:arb_translate/src/translate_exception.dart';
 import 'package:file/file.dart';
 
-class MissingApiKeyException implements Exception {
+class MissingApiKeyException implements TranslateException {
+  @override
   String get message =>
       'Missing API key. Provide the key using api-key argument in command line '
       'or using arb-translate-api-key property in l10n.yaml file or using '
       'ARB_TRANSLATE_API_KEY environment variable';
 }
 
-class MissingVertexAiProjectUrlException implements Exception {
+class MissingVertexAiProjectUrlException implements TranslateException {
+  @override
   String get message =>
       'Using Vertex AI model provider requires a project URL. Provide the URL '
       'using vertex-ai-project-url argument in command line or using '
       'arb-translate-vertex-ai-project-url property in l10n.yaml file';
 }
 
-class InvalidVertexAiProjectUrlException implements Exception {
+class InvalidVertexAiProjectUrlException implements TranslateException {
+  @override
   String get message =>
       'Invalid Vertex AI project URL. The URL should be a valid HTTPS URL and '
       'should end with "models" eg. "https://{api-endpoint}/v1/projects/'
       '{project-id}/locations/{location-id}/publishers/google/models"';
 }
 
-class ContextTooLongException implements Exception {
+class ContextTooLongException implements TranslateException {
+  @override
   String get message =>
       'Context is too long. The maximum length of translation context is '
       '${TranslateOptions.maxContextLength} characters';
@@ -44,12 +49,14 @@ class TranslateOptions {
     required this.modelProvider,
     required this.apiKey,
     required this.vertexAiProjectUrl,
+    required bool? disableSafety,
     required this.context,
     required this.arbDir,
     required String? templateArbFile,
     required bool? useEscaping,
     required bool? relaxSyntax,
-  })  : templateArbFile = templateArbFile ?? 'app_en.arb',
+  })  : disableSafety = disableSafety ?? false,
+        templateArbFile = templateArbFile ?? 'app_en.arb',
         useEscaping = useEscaping ?? false,
         relaxSyntax = relaxSyntax ?? false;
 
@@ -63,6 +70,7 @@ class TranslateOptions {
   final ModelProvider modelProvider;
   final String apiKey;
   final Uri? vertexAiProjectUrl;
+  final bool disableSafety;
   final String? context;
   final String arbDir;
   final String templateArbFile;
@@ -114,6 +122,7 @@ class TranslateOptions {
       modelProvider: modelProvider,
       apiKey: apiKey,
       vertexAiProjectUrl: vertexAiProjectUrl,
+      disableSafety: argResults.disableSafety ?? yamlResults.disableSafety,
       context: context,
       arbDir: argResults.arbDir ??
           yamlResults.arbDir ??

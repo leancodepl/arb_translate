@@ -1,3 +1,6 @@
+## 0.1.3
+- Add option to disable safety settings
+
 ## 0.1.2
 - Fix settings model provider in `l10n.yaml`
 

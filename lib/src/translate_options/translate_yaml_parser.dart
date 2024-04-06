@@ -7,6 +7,7 @@ class TranslateYamlResults {
     required this.modelProvider,
     required this.apiKey,
     required this.vertexAiProjectUrl,
+    required this.disableSafety,
     required this.context,
     required this.arbDir,
     required this.templateArbFile,
@@ -18,6 +19,7 @@ class TranslateYamlResults {
       : modelProvider = null,
         apiKey = null,
         vertexAiProjectUrl = null,
+        disableSafety = null,
         context = null,
         arbDir = null,
         templateArbFile = null,
@@ -27,6 +29,7 @@ class TranslateYamlResults {
   final ModelProvider? modelProvider;
   final String? apiKey;
   final String? vertexAiProjectUrl;
+  final bool? disableSafety;
   final String? context;
   final String? arbDir;
   final String? templateArbFile;
@@ -38,6 +41,7 @@ class TranslateYamlParser {
   static const _modelProviderKey = 'arb-translate-model-provider';
   static const _apiKeyKey = 'arb-translate-api-key';
   static const _vertexAiProjectUrlKey = 'arb-translate-vertex-ai-project-url';
+  static const _disableSafetyKey = 'arb-translate-disable-safety';
   static const _contextKey = 'arb-translate-context';
 
   TranslateYamlResults parse(File file) {
@@ -64,6 +68,7 @@ class TranslateYamlParser {
       arbDir: _tryReadUri(yamlNode, TranslateOptions.arbDirKey)?.path,
       vertexAiProjectUrl:
           _tryReadUri(yamlNode, _vertexAiProjectUrlKey).toString(),
+      disableSafety: _tryReadBool(yamlNode, _disableSafetyKey),
       context: _tryReadString(yamlNode, _contextKey),
       templateArbFile:
           _tryReadUri(yamlNode, TranslateOptions.templateArbFileKey)?.path,

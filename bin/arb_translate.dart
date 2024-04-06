@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:arb_translate/arb_translate.dart';
+import 'package:arb_translate/src/translate_exception.dart';
 import 'package:file/local.dart';
 
 Future<void> main(List<String> arguments) async {
@@ -32,16 +33,7 @@ Future<void> main(List<String> arguments) async {
       argResults,
       yamlResults,
     );
-  } on MissingApiKeyException catch (e) {
-    print(e.message);
-    exit(1);
-  } on MissingVertexAiProjectUrlException catch (e) {
-    print(e.message);
-    exit(1);
-  } on InvalidVertexAiProjectUrlException catch (e) {
-    print(e.message);
-    exit(1);
-  } on ContextTooLongException catch (e) {
+  } on TranslateException catch (e) {
     print(e.message);
     exit(1);
   }
