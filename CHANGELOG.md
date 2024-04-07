@@ -3,6 +3,7 @@
 - Add option to exclude locales
 - Fix quota exceeded error handling for Vertex AI
 - Fix setting use escaping and relax syntax in `l10n.yaml`
+- Update `google_generative_ai` dependency
 
 ## 0.1.2
 - Fix setting model provider in `l10n.yaml`
