@@ -9,6 +9,7 @@ class TranslateYamlResults {
     required this.vertexAiProjectUrl,
     required this.disableSafety,
     required this.context,
+    required this.excludeLocales,
     required this.arbDir,
     required this.templateArbFile,
     required this.useEscaping,
@@ -21,6 +22,7 @@ class TranslateYamlResults {
         vertexAiProjectUrl = null,
         disableSafety = null,
         context = null,
+        excludeLocales = null,
         arbDir = null,
         templateArbFile = null,
         useEscaping = null,
@@ -31,6 +33,7 @@ class TranslateYamlResults {
   final String? vertexAiProjectUrl;
   final bool? disableSafety;
   final String? context;
+  final List<String>? excludeLocales;
   final String? arbDir;
   final String? templateArbFile;
   final bool? useEscaping;
@@ -43,6 +46,7 @@ class TranslateYamlParser {
   static const _vertexAiProjectUrlKey = 'arb-translate-vertex-ai-project-url';
   static const _disableSafetyKey = 'arb-translate-disable-safety';
   static const _contextKey = 'arb-translate-context';
+  static const _excludeLocalesKey = 'arb-translate-exclude-locales';
 
   TranslateYamlResults parse(File file) {
     if (!file.existsSync()) {
@@ -70,6 +74,7 @@ class TranslateYamlParser {
           _tryReadUri(yamlNode, _vertexAiProjectUrlKey).toString(),
       disableSafety: _tryReadBool(yamlNode, _disableSafetyKey),
       context: _tryReadString(yamlNode, _contextKey),
+      excludeLocales: _tryReadStringList(yamlNode, _excludeLocalesKey),
       templateArbFile:
           _tryReadUri(yamlNode, TranslateOptions.templateArbFileKey)?.path,
       apiKey: _tryReadString(yamlNode, _apiKeyKey),
@@ -129,14 +134,36 @@ class TranslateYamlParser {
 
   static bool? _tryReadBool(YamlMap yamlMap, String key) {
     final Object? value = yamlMap[key];
+
     if (value == null) {
       return null;
     }
+
     if (value is! bool) {
       throw FormatException(
         'Expected "$key" to have a bool value, instead was "$value"',
       );
     }
+
     return value;
+  }
+
+  static List<String>? _tryReadStringList(YamlMap yamlMap, String key) {
+    final Object? value = yamlMap[key];
+
+    if (value == null) {
+      return null;
+    }
+
+    if (value is String) {
+      return <String>[value];
+    }
+
+    if (value is Iterable) {
+      return value.map((e) => e.toString()).toList();
+    }
+
+    throw FormatException(
+        'Expected "$key" to have a String or List value, instead was "$value"');
   }
 }

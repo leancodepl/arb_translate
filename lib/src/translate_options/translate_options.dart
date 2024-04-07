@@ -53,6 +53,7 @@ class TranslateOptions {
     required this.context,
     required this.arbDir,
     required String? templateArbFile,
+    required this.excludeLocales,
     required bool? useEscaping,
     required bool? relaxSyntax,
   })  : disableSafety = disableSafety ?? false,
@@ -74,6 +75,7 @@ class TranslateOptions {
   final String? context;
   final String arbDir;
   final String templateArbFile;
+  final List<String>? excludeLocales;
   final bool useEscaping;
   final bool relaxSyntax;
 
@@ -129,6 +131,7 @@ class TranslateOptions {
           fileSystem.path.join('lib', 'l10n'),
       templateArbFile:
           argResults.templateArbFile ?? yamlResults.templateArbFile,
+      excludeLocales: argResults.excludeLocales ?? yamlResults.excludeLocales,
       useEscaping: argResults.useEscaping ?? yamlResults.useEscaping,
       relaxSyntax: argResults.relaxSyntax ?? yamlResults.relaxSyntax,
     );

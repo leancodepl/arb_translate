@@ -15,6 +15,7 @@ void main() {
               'https://argResultsVertexAiProjectUrl/models';
           const argResultsDisableSafety = true;
           const argResultsContext = 'argResultsContext';
+          const argResultsExcludeLocales = ['pl'];
           const argResultsArbDir = 'argResultsArbDir';
           const argResultsTemplateArbFile = 'argResultsTemplateArbFile';
           const argResultsUseEscaping = true;
@@ -27,6 +28,7 @@ void main() {
             vertexAiProjectUrl: argResultsVertexAiProjectUrl,
             disableSafety: argResultsDisableSafety,
             context: argResultsContext,
+            excludeLocales: argResultsExcludeLocales,
             arbDir: argResultsArbDir,
             templateArbFile: argResultsTemplateArbFile,
             useEscaping: argResultsUseEscaping,
@@ -38,6 +40,7 @@ void main() {
             vertexAiProjectUrl: 'https://yamlResultsVertexAiProjectUrl/models',
             disableSafety: !argResultsDisableSafety,
             context: 'yamlResultsContext',
+            excludeLocales: ['en'],
             arbDir: 'yamlResultsArbDir',
             templateArbFile: 'yamlResultsTemplateArbFile',
             useEscaping: !argResultsUseEscaping,
@@ -77,6 +80,11 @@ void main() {
                   (options) => options.context,
                   'context',
                   argResultsContext,
+                )
+                .having(
+                  (options) => options.excludeLocales,
+                  'excludeLocales',
+                  argResultsExcludeLocales,
                 )
                 .having(
                   (options) => options.arbDir,

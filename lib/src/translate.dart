@@ -38,6 +38,12 @@ Future<void> translate(
       (bundle) => bundle.file.path.endsWith(options.templateArbFile));
 
   for (final bundle in bundles.where((bundle) => bundle != templateBundle)) {
+    if (options.excludeLocales?.contains(bundle.locale.toString()) ?? false) {
+      print('Skiping excluded locale ${bundle.locale}');
+
+      continue;
+    }
+
     await _translateBundle(
       translationDelegate: translationDelegate,
       templateBundle: templateBundle,

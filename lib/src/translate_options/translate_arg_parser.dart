@@ -12,6 +12,7 @@ class TranslateArgResults {
     required this.vertexAiProjectUrl,
     required this.disableSafety,
     required this.context,
+    required this.excludeLocales,
     required this.arbDir,
     required this.templateArbFile,
     required this.useEscaping,
@@ -24,6 +25,7 @@ class TranslateArgResults {
   final String? vertexAiProjectUrl;
   final bool? disableSafety;
   final String? context;
+  final List<String>? excludeLocales;
   final String? arbDir;
   final String? templateArbFile;
   final bool? useEscaping;
@@ -37,6 +39,7 @@ class TranslateArgParser {
   static const _vertexAiProjectUrlKey = 'vertex-ai-project-url';
   static const _disableSafetyKey = 'disable-safety';
   static const _contextKey = 'context';
+  static const _excludeLocalesKey = 'exclude-locales';
 
   final _parser = ArgParser(
       usageLineLength: stdout.hasTerminal ? stdout.terminalColumns : null)
@@ -74,6 +77,10 @@ class TranslateArgParser {
     ..addOption(
       _contextKey,
       help: 'The context to use for translation.',
+    )
+    ..addMultiOption(
+      _excludeLocalesKey,
+      help: 'Comma separated list of locales to be excluded from translation.',
     )
     ..addSeparator('ARB options:')
     ..addOption(
@@ -120,6 +127,9 @@ class TranslateArgParser {
             (provider) => provider.key == rawResults[_modelProviderKey],
           )
         : null;
+    final excludeLocales = rawResults.wasParsed(_excludeLocalesKey)
+        ? rawResults[_excludeLocalesKey] as List<String>
+        : null;
 
     return TranslateArgResults(
       help: rawResults[_helpKey] as bool?,
@@ -128,6 +138,7 @@ class TranslateArgParser {
       vertexAiProjectUrl: rawResults[_vertexAiProjectUrlKey] as String?,
       disableSafety: _getBoolIfParsed(rawResults, _disableSafetyKey),
       context: rawResults[_contextKey] as String?,
+      excludeLocales: excludeLocales,
       arbDir: rawResults[TranslateOptions.arbDirKey] as String?,
       templateArbFile:
           rawResults[TranslateOptions.templateArbFileKey] as String?,
