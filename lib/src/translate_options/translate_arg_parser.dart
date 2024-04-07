@@ -132,7 +132,7 @@ class TranslateArgParser {
         : null;
 
     return TranslateArgResults(
-      help: rawResults[_helpKey] as bool?,
+      help: _getBoolIfParsed(rawResults, _helpKey),
       modelProvider: modelProvider,
       apiKey: rawResults[_apiKeyKey] as String?,
       vertexAiProjectUrl: rawResults[_vertexAiProjectUrlKey] as String?,
@@ -142,8 +142,10 @@ class TranslateArgParser {
       arbDir: rawResults[TranslateOptions.arbDirKey] as String?,
       templateArbFile:
           rawResults[TranslateOptions.templateArbFileKey] as String?,
-      useEscaping: rawResults[TranslateOptions.useEscapingKey] as bool?,
-      relaxSyntax: rawResults[TranslateOptions.relaxSyntaxKey] as bool?,
+      useEscaping:
+          _getBoolIfParsed(rawResults, TranslateOptions.useEscapingKey),
+      relaxSyntax:
+          _getBoolIfParsed(rawResults, TranslateOptions.relaxSyntaxKey),
     );
   }
 
