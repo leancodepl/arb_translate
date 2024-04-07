@@ -1,6 +1,7 @@
 ## 0.1.3
 - Add option to disable safety settings
 - Add option to exclude locales
+- Fix quota exceeded error handling for Vertex AI
 
 ## 0.1.2
 - Fix setting model provider in `l10n.yaml`

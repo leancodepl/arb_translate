@@ -149,6 +149,15 @@ class GeminiTranslationDelegate extends TranslationDelegate {
 
     var retryCount = 0;
 
+    Future<void> onQuotaExceeded() {
+      print(
+        'Quota exceeded for batch $batchName, retrying in '
+        '${_queryBackoff.inSeconds}s...',
+      );
+
+      return Future.delayed(_queryBackoff);
+    }
+
     while (true) {
       String? response;
 
@@ -156,12 +165,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
         response = (await _model.generateContent(prompt)).text;
       } on FormatException catch (e) {
         if (e.message.contains('code: 429')) {
-          print(
-            'Quota exceeded for batch $batchName, retrying in '
-            '${_queryBackoff.inSeconds}s...',
-          );
-
-          await Future.delayed(_queryBackoff);
+          await onQuotaExceeded();
         } else {
           retryCount++;
 
@@ -182,8 +186,11 @@ class GeminiTranslationDelegate extends TranslationDelegate {
         if (e.message
             .startsWith('Request had invalid authentication credentials.')) {
           throw InvalidApiKeyException();
-        }
+        } else if (e.message.startsWith('Quota exceeded')) {
+          await onQuotaExceeded();
 
+          continue;
+        }
         rethrow;
       } on UnsupportedUserLocation catch (_) {
         throw UnsupportedUserLocationException();
