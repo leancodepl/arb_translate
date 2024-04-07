@@ -2,7 +2,7 @@
 - Add option to disable safety settings
 
 ## 0.1.2
-- Fix settings model provider in `l10n.yaml`
+- Fix setting model provider in `l10n.yaml`
 
 ## 0.1.1
 - Fix citation parsing issue

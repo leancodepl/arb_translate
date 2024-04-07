@@ -13,7 +13,7 @@ class InvalidApiKeyException implements TranslateException {
 
 class UnsupportedUserLocationException implements TranslateException {
   @override
-  String get message => 'Gemini API is not avilable in your location. Use '
+  String get message => 'Gemini API is not available in your location. Use '
       'Vertex AI model provider. See the documentation for more information';
 }
 
@@ -25,7 +25,7 @@ class SafetyException implements TranslateException {
       'arb-translate-disable-safety: true in l10n.yaml';
 }
 
-class ReponseParsingException implements TranslateException {
+class ResponseParsingException implements TranslateException {
   @override
   String get message => 'Failed to parse API response';
 }
@@ -64,7 +64,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
 
   static const _batchSize = 4096;
   static const _maxRetryCount = 5;
-  static const _maxParalellQueries = 5;
+  static const _maxParallelQueries = 5;
   static const _queryBackoff = Duration(seconds: 5);
 
   static final _disabledSafetySettings = [
@@ -87,11 +87,11 @@ class GeminiTranslationDelegate extends TranslationDelegate {
 
     final results = <String, String>{};
 
-    for (var i = 0; i < batches.length; i += _maxParalellQueries) {
+    for (var i = 0; i < batches.length; i += _maxParallelQueries) {
       final batchResults = await Future.wait(
         [
           for (var j = i;
-              j < i + _maxParalellQueries && j < batches.length;
+              j < i + _maxParallelQueries && j < batches.length;
               j++)
             _translateBatch(
               resources: batches[j],
@@ -201,7 +201,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
         retryCount++;
 
         if (retryCount > _maxRetryCount) {
-          throw ReponseParsingException();
+          throw ResponseParsingException();
         }
 
         print(
@@ -313,7 +313,7 @@ class VertexHttpClient extends BaseClient {
     }
 
     // We have to rewrite the `citations` to `citationsources` because of
-    // incompatiblity between Gemini and Vertex AI. Vertext AI returns
+    // incompatibility between Gemini and Vertex AI. Vertext AI returns
     // `citations` instead of `citationSources`.
     if (parsedRespnoseBody is Map<String, dynamic>) {
       final candidates = parsedRespnoseBody['candidates'];

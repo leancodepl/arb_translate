@@ -35,7 +35,7 @@ void main() {
           final yamlResults = TranslateYamlResults(
             modelProvider: ModelProvider.gemini,
             apiKey: 'yamlResultsApiKey',
-            vertexAiProjectUrl: 'htts://yamlResultsVertexAiProjectUrl/models',
+            vertexAiProjectUrl: 'https://yamlResultsVertexAiProjectUrl/models',
             disableSafety: !argResultsDisableSafety,
             context: 'yamlResultsContext',
             arbDir: 'yamlResultsArbDir',
