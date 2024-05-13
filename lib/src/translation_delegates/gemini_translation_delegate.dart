@@ -142,7 +142,8 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     final prompt = [
       Content.text(
         'Translate ARB messages for ${context ?? 'app'} to locale "$locale". '
-        'Add other ICU plural forms according to CLDR rules if necessary.\n\n'
+        'Add other ICU plural forms according to CLDR rules if necessary. '
+        'Return only raw JSON.\n\n'
         '$encodedResources',
       ),
     ];
@@ -248,10 +249,13 @@ class GeminiTranslationDelegate extends TranslationDelegate {
       return null;
     }
 
+    final trimmedResponse = response.substring(
+        response.indexOf('{'), response.lastIndexOf('}') + 1);
+
     Map<String, Object?> responseJson;
 
     try {
-      responseJson = json.decode(response);
+      responseJson = json.decode(trimmedResponse);
     } catch (e) {
       return null;
     }

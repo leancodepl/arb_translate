@@ -1,3 +1,7 @@
+## 0.1.4
+- Improve reliability by trimming model response
+- Specify JSON output in prompt
+
 ## 0.1.3
 - Add option to disable safety settings
 - Add option to exclude locales
