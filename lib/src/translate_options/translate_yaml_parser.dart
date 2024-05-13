@@ -2,6 +2,7 @@ import 'package:arb_translate/arb_translate.dart';
 import 'package:file/file.dart';
 import 'package:yaml/yaml.dart';
 
+/// Represents the results of parsing a YAML file for translation options.
 class TranslateYamlResults {
   const TranslateYamlResults({
     required this.modelProvider,
@@ -16,6 +17,7 @@ class TranslateYamlResults {
     required this.relaxSyntax,
   });
 
+  /// Creates an empty instance of [TranslateYamlResults].
   const TranslateYamlResults.empty()
       : modelProvider = null,
         apiKey = null,
@@ -28,18 +30,38 @@ class TranslateYamlResults {
         useEscaping = null,
         relaxSyntax = null;
 
+  /// The model provider for translation.
   final ModelProvider? modelProvider;
+
+  /// The API key for translation.
   final String? apiKey;
+
+  /// The URL of the Vertex AI project.
   final String? vertexAiProjectUrl;
+
+  /// Indicates whether safety checks are disabled.
   final bool? disableSafety;
+
+  /// The context for translation.
   final String? context;
+
+  /// The list of locales to exclude from translation.
   final List<String>? excludeLocales;
+
+  /// The directory containing the ARB files.
   final String? arbDir;
+
+  /// The template ARB file.
   final String? templateArbFile;
+
+  /// Indicates whether escaping is used in messages.
   final bool? useEscaping;
+
+  /// Indicates whether relaxed syntax is used in messages.
   final bool? relaxSyntax;
 }
 
+/// A class that parses YAML files containing translation options.
 class TranslateYamlParser {
   static const _modelProviderKey = 'arb-translate-model-provider';
   static const _apiKeyKey = 'arb-translate-api-key';
@@ -48,6 +70,10 @@ class TranslateYamlParser {
   static const _contextKey = 'arb-translate-context';
   static const _excludeLocalesKey = 'arb-translate-exclude-locales';
 
+  /// Parses the given [file] and returns the translation options.
+  ///
+  /// If the file does not exist or is empty, it returns an empty [TranslateYamlResults] object.
+  /// If the file does not contain a YAML map, it throws a [FormatException].
   TranslateYamlResults parse(File file) {
     if (!file.existsSync()) {
       return TranslateYamlResults.empty();

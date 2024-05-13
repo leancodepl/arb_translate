@@ -4,6 +4,8 @@ import 'package:arb_translate/arb_translate.dart';
 import 'package:args/args.dart';
 import 'package:collection/collection.dart';
 
+/// Represents the result of parsing command-line arguments for the translation
+/// options.
 class TranslateArgResults {
   const TranslateArgResults({
     required this.help,
@@ -19,19 +21,41 @@ class TranslateArgResults {
     required this.relaxSyntax,
   });
 
+  /// Indicates whether the help option was specified.
   final bool? help;
+
+  /// The model provider for translation.
   final ModelProvider? modelProvider;
+
+  /// The API key for translation.
   final String? apiKey;
+
+  /// The URL of the Vertex AI project.
   final String? vertexAiProjectUrl;
+
+  /// Indicates whether safety checks are disabled.
   final bool? disableSafety;
+
+  /// The context for translation.
   final String? context;
+
+  /// The list of locales to exclude from translation.
   final List<String>? excludeLocales;
+
+  /// The directory containing the ARB files.
   final String? arbDir;
+
+  /// The template ARB file.
   final String? templateArbFile;
+
+  /// Indicates whether escaping is used in messages.
   final bool? useEscaping;
+
+  /// Indicates whether relaxed syntax is used in messages.
   final bool? relaxSyntax;
 }
 
+/// A class that parses command-line arguments for translation options.
 class TranslateArgParser {
   static const _helpKey = 'help';
   static const _modelProviderKey = 'model-provider';
@@ -113,6 +137,10 @@ class TranslateArgParser {
 
   String get usage => _parser.usage;
 
+  /// Parses the given [args] and returns the parsed results as a [TranslateArgResults] object.
+  ///
+  /// Throws a [FormatException] if there is an unexpected positional argument.
+  /// Returns a [TranslateArgResults] object containing the parsed results.
   TranslateArgResults parse(List<String> args) {
     final rawResults = _parser.parse(args);
 

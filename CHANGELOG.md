@@ -1,6 +1,7 @@
 ## 0.1.4
 - Improve reliability by trimming model response
 - Specify JSON output in prompt
+- Add dart docs for public API
 
 ## 0.1.3
 - Add option to disable safety settings

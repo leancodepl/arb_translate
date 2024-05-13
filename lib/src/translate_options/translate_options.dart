@@ -4,6 +4,7 @@ import 'package:arb_translate/arb_translate.dart';
 import 'package:arb_translate/src/translate_exception.dart';
 import 'package:file/file.dart';
 
+/// Exception thrown when an API key is missing.
 class MissingApiKeyException implements TranslateException {
   @override
   String get message =>
@@ -12,6 +13,7 @@ class MissingApiKeyException implements TranslateException {
       'ARB_TRANSLATE_API_KEY environment variable';
 }
 
+/// Exception thrown when a Vertex AI project URL is missing.
 class MissingVertexAiProjectUrlException implements TranslateException {
   @override
   String get message =>
@@ -20,6 +22,7 @@ class MissingVertexAiProjectUrlException implements TranslateException {
       'arb-translate-vertex-ai-project-url property in l10n.yaml file';
 }
 
+/// Exception thrown when an invalid Vertex AI project URL is provided.
 class InvalidVertexAiProjectUrlException implements TranslateException {
   @override
   String get message =>
@@ -28,6 +31,7 @@ class InvalidVertexAiProjectUrlException implements TranslateException {
       '{project-id}/locations/{location-id}/publishers/google/models"';
 }
 
+/// Exception thrown when the translation context is too long.
 class ContextTooLongException implements TranslateException {
   @override
   String get message =>
@@ -35,6 +39,7 @@ class ContextTooLongException implements TranslateException {
       '${TranslateOptions.maxContextLength} characters';
 }
 
+/// Enum representing the available model providers.
 enum ModelProvider {
   gemini('gemini'),
   vertexAi('vertex-ai');
@@ -44,6 +49,7 @@ enum ModelProvider {
   final String key;
 }
 
+/// Class representing the options for translation.
 class TranslateOptions {
   const TranslateOptions({
     required this.modelProvider,
@@ -79,6 +85,8 @@ class TranslateOptions {
   final bool useEscaping;
   final bool relaxSyntax;
 
+  /// Factory method to resolve [TranslateOptions] from command line arguments
+  /// and YAML configuration.
   factory TranslateOptions.resolve(
     FileSystem fileSystem,
     TranslateArgResults argResults,

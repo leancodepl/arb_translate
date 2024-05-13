@@ -10,6 +10,12 @@ import 'package:arb_translate/src/translation_delegates/translation_delegate.dar
 import 'package:arb_translate/src/write_updated_bundle.dart';
 import 'package:file/file.dart';
 
+/// Translates the ARB files in the specified directory using the given options.
+///
+/// The [fileSystem] parameter represents the file system to use for accessing
+/// the ARB files.
+/// The [options] parameter contains the translation options, including the
+/// model provider, API key, context, safety settings, and more.
 Future<void> translate(
   FileSystem fileSystem,
   TranslateOptions options,
