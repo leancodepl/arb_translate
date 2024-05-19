@@ -11,10 +11,20 @@ class NoOpTranslationDelegate extends TranslationDelegate {
         );
 
   @override
-  Future<Map<String, String>> translate(
-    Map<String, Object?> resources,
-    LocaleInfo locale,
-  ) {
+  int get batchSize => throw UnimplementedError();
+
+  @override
+  int get maxParallelQueries => throw UnimplementedError();
+
+  @override
+  int get maxRetryCount => throw UnimplementedError();
+
+  @override
+  Duration get queryBackoff => throw UnimplementedError();
+
+  @override
+  Future<String> getModelResponse(
+      Map<String, Object?> resources, LocaleInfo locale) {
     throw UnimplementedError();
   }
 }
@@ -26,7 +36,7 @@ void main() {
       final delegate = NoOpTranslationDelegate();
 
       test(
-        'validateResults returns true for resources without placeholers',
+        'validateResults returns true for resources without placeholders',
         () {
           final resources = {'key': 'value'};
           final results = {'key': 'translateValue'};
@@ -36,7 +46,7 @@ void main() {
       );
 
       test(
-        'validateResults returns true for resources with valid placeholers',
+        'validateResults returns true for resources with valid placeholders',
         () {
           final resources = {
             'key': 'value {count, plural, other{{count} items}}',
@@ -57,7 +67,7 @@ void main() {
       );
 
       test(
-        'validateResults returns false for resources with invalid placeholers',
+        'validateResults returns false for resources with invalid placeholders',
         () {
           final resources = {
             'key': 'value {count, plural, one{1 item} other{{count} items}}',

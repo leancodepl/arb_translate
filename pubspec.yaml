@@ -1,8 +1,8 @@
 name: arb_translate
 description: >-
   A command-line tool for automatically generating missing translations to ARB
-  files using Google Gemini API by LeanCode.
-version: 0.1.4
+  files using Google Gemini or OpenAI ChatGPT by LeanCode.
+version: 1.0.0
 repository: https://github.com/leancodepl/arb_translate
 issue_tracker: https://github.com/leancodepl/arb_translate/issues
 topics:
@@ -21,6 +21,7 @@ environment:
 dependencies:
   args: ^2.4.2
   collection: ^1.18.0
+  dart_openai: ^5.1.0
   file: ^7.0.0
   google_generative_ai: ^0.2.3
   http: ^1.2.0

@@ -1,3 +1,6 @@
+## 1.0.0
+- Add ChatGPT support
+
 ## 0.1.4
 - Improve reliability by trimming model response
 - Specify JSON output in prompt

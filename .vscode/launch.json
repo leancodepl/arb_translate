@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "arb_translate",
+            "name": "arb_translate (Gemini)",
             "request": "launch",
             "type": "dart",
             "args": [
@@ -11,6 +11,19 @@
                 "--context",
                 "sporting goods store app"
             ]
-        }
+        },
+        {
+            "name": "arb_translate (ChatGPT)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--arb-dir",
+                "example_l10n",
+                "--context",
+                "sporting goods store app",
+                "--model-provider",
+                "open-ai"
+            ]
+        },
     ]
 }
