@@ -2,8 +2,9 @@
 
 [![arb_translate on pub.dev][pub_badge]][pub_link]
 
-A command-line tool for automatically generating missing translations to ARB files
-using Google Gemini API by [LeanCode](https://leancode.co/?utm_source=readme&utm_medium=arb_translate_package)
+A command-line tool for automatically generating missing translations to ARB
+files using Google Gemini or OpenAI ChatGPT by
+[LeanCode](https://leancode.co/?utm_source=readme&utm_medium=arb_translate_package)
 
 ## Installation
 
@@ -18,38 +19,40 @@ using `flutter_localizations` for code generation from ARB files. Thanks to this
 integration, the setup process for arb_translate can be completed in just a few
 steps:
 
-### With l10n.yaml configuration file
+1. Generate your API key. You can create your Gemini key
+   [here](https://makersuite.google.com/app/apikey) or your OpenAI key
+   [here](https://platform.openai.com/api-keys)
 
-1. Generate your Gemini API token by following
-   https://ai.google.dev/tutorials/setup
 2. Save your API token in the environment variable `ARB_TRANSLATE_API_KEY` or
-   add `arb-translate-api-key: {your-api-key}` to `l10n.yaml` in your project
-3. (Optional) Add context of your application
+   add `arb-translate-api-key: {your-api-key}` to `l10n.yaml` in your project.
+
+3. If you are using ChatGPT select OpenAI as model provider. To do it add
+   `arb-translate-model-provider: open-ai` to `l10n.yaml` or use command
+   argument `--model-provider: open-ai`
+
+4. (Optional) Add context of your application
    `arb-translate-context: {your-app-context}` eg. "sporting goods store app"
 
 All other required parameters match `flutter_localizations` parameters and will
 be read from `l10n.yaml` file. You can override them using command arguments if
 necessary. See `arb_translate --help` for more information.
 
-### Without l10n.yaml configuration file
+### Configuration without l10n.yaml
+If you project doesn't include `l10n.yaml` configuration you have to provide
+configuration using environment variables and command arguments. You also have
+to provide:
 
-1. Generate your Gemini API token by following
-   https://ai.google.dev/tutorials/setup
-2. Save your API token in the environment variable `ARB_TRANSLATE_API_KEY` or
-   specify as command argument `--api-key {your-api-key}`
-3. Specify other option as command arguments:
-   1. `--arb-dir` The directory where the template and translated ARB files are
-      located
-   2. `--template-arb-file` The template ARB file that will be used as the basis
-      for translation
-   3. (Optional) Add context of your application `--context {your-app-context}`
-      eg. "sporting goods store app"
+1. `--arb-dir` The directory where the template and translated ARB files are
+   located
+
+2. `--template-arb-file` The template ARB file that will be used as the basis
+   for translation
 
 See `arb_translate --help` for more information.
 
-### Configuration in regions where Gemini API is unavailable
+### Vertex AI configuration (for regions without Gemini API)
 
-Gemini API is not available in all regions such as EU. You can strill use
+Gemini API is not available in all regions such as EU. You can still use
 `arb_translate` but you need to access Gemini via Vertex AI service from Google
 Cloud Platform. Because of that configuration is a bit longer:
 
@@ -64,7 +67,8 @@ Cloud Platform. Because of that configuration is a bit longer:
    command argument `--api-key {your-api-key}`
 4. Add `arb-translate-vertex-ai-project-url: {your-project-url}` to `l10n.yaml`
    or specify as command argument `--vertex-ai-project-url {your-project-url}`.
-   Project url should look like this `https://{region}-aiplatform.googleapis.com/v1/projects/{your-project-id}/locations/{region}/publishers/google/models`
+   Project url should look like this
+   `https://{region}-aiplatform.googleapis.com/v1/projects/{your-project-id}/locations/{region}/publishers/google/models`
 5. Add `arb-translate-model-provider: vertex-ai` to `l10n.yaml` or specify as
    command argument `--model-provider: vertex-ai`
 
@@ -87,7 +91,8 @@ $ arb_translate --arb-dir...
 [pub_link]: https://pub.dartlang.org/packages/arb_translate
 
 ## Read more
-If you want to know how we made this tool and what challenges we had, [read the story](https://leancode.co/blog/flutter-app-localization-with-ai?utm_source=readme&utm_medium=arb_translate_package).
+If you want to know how we made this tool and what challenges we had,
+[read the story](https://leancode.co/blog/flutter-app-localization-with-ai?utm_source=readme&utm_medium=arb_translate_package).
 
 ##
 

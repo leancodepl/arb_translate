@@ -1,39 +1,10 @@
 import 'dart:convert';
 
 import 'package:arb_translate/src/flutter_tools/localizations_utils.dart';
-import 'package:arb_translate/src/translate_exception.dart';
+import 'package:arb_translate/src/translation_delegates/translate_exception.dart';
 import 'package:arb_translate/src/translation_delegates/translation_delegate.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:http/http.dart';
-
-class InvalidApiKeyException implements TranslateException {
-  @override
-  String get message => 'Provided API key is not valid';
-}
-
-class UnsupportedUserLocationException implements TranslateException {
-  @override
-  String get message => 'Gemini API is not available in your location. Use '
-      'Vertex AI model provider. See the documentation for more information';
-}
-
-class SafetyException implements TranslateException {
-  @override
-  String get message =>
-      'Translation failed due to safety settings. You can disable safety '
-      'settings using --disable-safety flag or with '
-      'arb-translate-disable-safety: true in l10n.yaml';
-}
-
-class ResponseParsingException implements TranslateException {
-  @override
-  String get message => 'Failed to parse API response';
-}
-
-class PlaceholderValidationException implements TranslateException {
-  @override
-  String get message => 'Placeholder validation failed';
-}
 
 class GeminiTranslationDelegate extends TranslationDelegate {
   GeminiTranslationDelegate({
@@ -62,10 +33,14 @@ class GeminiTranslationDelegate extends TranslationDelegate {
           httpClient: VertexHttpClient(projectUrl),
         );
 
-  static const _batchSize = 4096;
-  static const _maxRetryCount = 5;
-  static const _maxParallelQueries = 5;
-  static const _queryBackoff = Duration(seconds: 5);
+  @override
+  int get batchSize => 4096;
+  @override
+  int get maxRetryCount => 5;
+  @override
+  int get maxParallelQueries => 5;
+  @override
+  Duration get queryBackoff => Duration(seconds: 5);
 
   static final _disabledSafetySettings = [
     HarmCategory.harassment,
@@ -79,65 +54,10 @@ class GeminiTranslationDelegate extends TranslationDelegate {
   final GenerativeModel _model;
 
   @override
-  Future<Map<String, String>> translate(
+  Future<String> getModelResponse(
     Map<String, Object?> resources,
     LocaleInfo locale,
   ) async {
-    final batches = prepareBatches(resources);
-
-    final results = <String, String>{};
-
-    for (var i = 0; i < batches.length; i += _maxParallelQueries) {
-      final batchResults = await Future.wait(
-        [
-          for (var j = i;
-              j < i + _maxParallelQueries && j < batches.length;
-              j++)
-            _translateBatch(
-              resources: batches[j],
-              locale: locale,
-              batchName: '${j + 1}/${batches.length}',
-            ),
-        ],
-      );
-
-      results.addAll({for (final results in batchResults) ...results});
-    }
-
-    return results;
-  }
-
-  List<Map<String, Object?>> prepareBatches(Map<String, Object?> resources) {
-    final batches = [<String, Object?>{}];
-
-    var lastBatchSize = 0;
-
-    for (final key in resources.keys.where((key) => !key.startsWith('@'))) {
-      final resourceWithMetadata = {
-        key: resources[key],
-        if (resources.containsKey('@$key')) '@$key': resources['@$key'],
-      };
-      final resourceSize = json.encode(resourceWithMetadata).length;
-
-      if (lastBatchSize + resourceSize <= _batchSize) {
-        batches.last.addAll(resourceWithMetadata);
-
-        lastBatchSize += resourceSize;
-      } else {
-        batches.add(resourceWithMetadata);
-
-        lastBatchSize = key.length;
-      }
-    }
-
-    return batches;
-  }
-
-  Future<Map<String, String>> _translateBatch({
-    required Map<String, Object?> resources,
-    required LocaleInfo locale,
-    required String batchName,
-  }) async {
     final encodedResources = JsonEncoder.withIndent('  ').convert(resources);
     final prompt = [
       Content.text(
@@ -148,128 +68,40 @@ class GeminiTranslationDelegate extends TranslationDelegate {
       ),
     ];
 
-    var retryCount = 0;
-
-    Future<void> onQuotaExceeded() {
-      print(
-        'Quota exceeded for batch $batchName, retrying in '
-        '${_queryBackoff.inSeconds}s...',
-      );
-
-      return Future.delayed(_queryBackoff);
-    }
-
-    while (true) {
-      String? response;
-
-      try {
-        response = (await _model.generateContent(prompt)).text;
-      } on FormatException catch (e) {
-        if (e.message.contains('code: 429')) {
-          await onQuotaExceeded();
-        } else {
-          retryCount++;
-
-          if (retryCount > _maxRetryCount) {
-            rethrow;
-          }
-
-          print(
-            'Failed to fetch translations for $batchName, retrying '
-            '$retryCount/$_maxRetryCount...',
-          );
-        }
-
-        continue;
-      } on InvalidApiKey catch (_) {
-        throw InvalidApiKeyException();
-      } on ServerException catch (e) {
-        if (e.message
-            .startsWith('Request had invalid authentication credentials.')) {
-          throw InvalidApiKeyException();
-        } else if (e.message.startsWith('Quota exceeded')) {
-          await onQuotaExceeded();
-
-          continue;
-        }
-        rethrow;
-      } on UnsupportedUserLocation catch (_) {
-        throw UnsupportedUserLocationException();
-      } on GenerativeAIException catch (e) {
-        if (e.message.startsWith('Candidate was blocked due to safety')) {
-          throw SafetyException();
-        }
-
-        rethrow;
-      }
-
-      final result = _tryParseResponse(resources, response);
-
-      if (result == null) {
-        retryCount++;
-
-        if (retryCount > _maxRetryCount) {
-          throw ResponseParsingException();
-        }
-
-        print(
-          'Failed to parse response for $batchName, retrying '
-          '$retryCount/$_maxRetryCount...',
-        );
-
-        continue;
-      }
-
-      if (!validateResults(resources, result)) {
-        retryCount++;
-
-        print(
-          'Placeholder validation failed for batch $batchName, retrying '
-          '$retryCount/$_maxRetryCount...',
-        );
-
-        if (retryCount > _maxRetryCount) {
-          throw PlaceholderValidationException();
-        }
-
-        continue;
-      }
-
-      print('Translated batch $batchName');
-
-      return result;
-    }
-  }
-
-  Map<String, String>? _tryParseResponse(
-    Map<String, Object?> resources,
-    String? response,
-  ) {
-    if (response == null) {
-      return null;
-    }
-
-    final trimmedResponse = response.substring(
-        response.indexOf('{'), response.lastIndexOf('}') + 1);
-
-    Map<String, Object?> responseJson;
-
     try {
-      responseJson = json.decode(trimmedResponse);
-    } catch (e) {
-      return null;
+      final response = (await _model.generateContent(prompt)).text;
+
+      if (response == null) {
+        throw NoResponseException();
+      }
+
+      return response;
+    } on FormatException catch (e) {
+      if (e.message.contains('code: 429')) {
+        throw QuotaExceededException();
+      }
+
+      rethrow;
+    } on InvalidApiKey catch (_) {
+      throw InvalidApiKeyException();
+    } on ServerException catch (e) {
+      if (e.message
+          .startsWith('Request had invalid authentication credentials.')) {
+        throw InvalidApiKeyException();
+      } else if (e.message.startsWith('Quota exceeded')) {
+        throw QuotaExceededException();
+      }
+
+      rethrow;
+    } on UnsupportedUserLocation catch (_) {
+      throw UnsupportedUserLocationException();
+    } on GenerativeAIException catch (e) {
+      if (e.message.startsWith('Candidate was blocked due to safety')) {
+        throw SafetyException();
+      }
+
+      rethrow;
     }
-
-    final messageResources =
-        resources.keys.where((key) => !key.startsWith('@'));
-
-    if (messageResources.any((key) => responseJson[key] is! String)) {
-      return null;
-    }
-
-    return {
-      for (final key in messageResources) key: responseJson[key] as String,
-    };
   }
 }
 
