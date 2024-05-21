@@ -6,19 +6,56 @@ import 'package:file/file.dart';
 
 /// Enum representing the available model providers.
 enum ModelProvider {
-  gemini('gemini'),
-  vertexAi('vertex-ai'),
-  openAi('open-ai');
+  gemini('gemini', 'Gemini'),
+  vertexAi('vertex-ai', 'Vertex AI'),
+  openAi('open-ai', 'Open AI');
 
-  const ModelProvider(this.key);
+  const ModelProvider(this.key, this.name);
 
   final String key;
+  final String name;
+}
+
+/// Enum representing the available models.
+enum Model {
+  gemini10Pro('gemini-1.0-pro', 'Gemini 1.0 Pro'),
+  gemini15Pro('gemini-1.5-pro', 'Gemini 1.5 Pro'),
+  gemini15Flash('gemini-1.5-flash', 'Gemini 1.5 Flash'),
+  gpt35Turbo('gpt-3.5-turbo', 'GPT-3.5 Turbo'),
+  gpt4('gpt-4', 'GPT-4'),
+  gpt4Turbo('gpt-4-turbo', 'GPT-4 Turbo'),
+  gpt4O('gpt-4o', 'GPT-4o');
+
+  const Model(this.key, this.name);
+
+  final String key;
+  final String name;
+
+  List<ModelProvider> get providers => geminiModels.contains(this)
+      ? [ModelProvider.gemini, ModelProvider.vertexAi]
+      : [ModelProvider.openAi];
+
+  /// Returns a set of Gemini models.
+  static Set<Model> get geminiModels => {
+        Model.gemini10Pro,
+        Model.gemini15Pro,
+        Model.gemini15Flash,
+      };
+
+  /// Returns a set of GPT models.
+  static Set<Model> get gptModels => {
+        Model.gpt35Turbo,
+        Model.gpt4,
+        Model.gpt4Turbo,
+        Model.gpt4O,
+      };
 }
 
 /// Class representing the options for translation.
 class TranslateOptions {
   const TranslateOptions({
     required this.modelProvider,
+    required this.model,
     required this.apiKey,
     required this.vertexAiProjectUrl,
     required bool? disableSafety,
@@ -41,6 +78,7 @@ class TranslateOptions {
   static const maxContextLength = 32768;
 
   final ModelProvider modelProvider;
+  final Model model;
   final String apiKey;
   final Uri? vertexAiProjectUrl;
   final bool disableSafety;
@@ -62,13 +100,22 @@ class TranslateOptions {
         yamlResults.apiKey ??
         Platform.environment['ARB_TRANSLATE_API_KEY'];
 
-    if (apiKey == null) {
+    if (apiKey == null || apiKey.isEmpty) {
       throw MissingApiKeyException();
     }
 
     final modelProvider = argResults.modelProvider ??
         yamlResults.modelProvider ??
         ModelProvider.gemini;
+    final model = argResults.model ??
+        yamlResults.model ??
+        (modelProvider == ModelProvider.openAi
+            ? Model.gpt35Turbo
+            : Model.gemini10Pro);
+
+    if (!model.providers.contains(modelProvider)) {
+      throw ModelProviderMismatchException();
+    }
 
     final vertexAiProjectUrlString =
         argResults.vertexAiProjectUrl ?? yamlResults.vertexAiProjectUrl;
@@ -96,6 +143,7 @@ class TranslateOptions {
 
     return TranslateOptions(
       modelProvider: modelProvider,
+      model: model,
       apiKey: apiKey,
       vertexAiProjectUrl: vertexAiProjectUrl,
       disableSafety: argResults.disableSafety ?? yamlResults.disableSafety,

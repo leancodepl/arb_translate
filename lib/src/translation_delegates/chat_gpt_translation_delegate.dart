@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:arb_translate/src/flutter_tools/localizations_utils.dart';
+import 'package:arb_translate/src/translate_options/translate_options.dart';
 import 'package:arb_translate/src/translation_delegates/translate_exception.dart';
 import 'package:arb_translate/src/translation_delegates/translation_delegate.dart';
 import 'package:dart_openai/dart_openai.dart';
 
 class ChatGptTranslationDelegate extends TranslationDelegate {
   ChatGptTranslationDelegate({
+    required this.model,
     required String apiKey,
     required super.context,
     required super.useEscaping,
@@ -15,6 +17,8 @@ class ChatGptTranslationDelegate extends TranslationDelegate {
     OpenAI.apiKey = apiKey;
     OpenAI.requestsTimeOut = Duration(minutes: 2);
   }
+
+  final Model model;
 
   @override
   int get batchSize => 4096;
@@ -48,8 +52,8 @@ class ChatGptTranslationDelegate extends TranslationDelegate {
 
     try {
       final response = (await OpenAI.instance.chat.create(
-        model: "gpt-3.5-turbo",
-        responseFormat: {"type": "json_object"},
+        model: model.key,
+        responseFormat: model != Model.gpt4 ? {"type": "json_object"} : null,
         messages: prompt,
       ))
           .choices

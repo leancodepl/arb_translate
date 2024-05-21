@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:arb_translate/src/flutter_tools/localizations_utils.dart';
+import 'package:arb_translate/src/translate_options/translate_options.dart';
 import 'package:arb_translate/src/translation_delegates/translate_exception.dart';
 import 'package:arb_translate/src/translation_delegates/translation_delegate.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
@@ -8,18 +9,24 @@ import 'package:http/http.dart';
 
 class GeminiTranslationDelegate extends TranslationDelegate {
   GeminiTranslationDelegate({
+    required Model model,
     required String apiKey,
     required super.context,
     required bool disableSafety,
     required super.useEscaping,
     required super.relaxSyntax,
   }) : _model = GenerativeModel(
-          model: 'gemini-pro',
+          model: switch (model) {
+            Model.gemini10Pro => Model.gemini10Pro.key,
+            Model.gemini15Pro || Model.gemini15Flash => '${model.key}-latest',
+            _ => throw ArgumentError.value(model),
+          },
           apiKey: apiKey,
           safetySettings: disableSafety ? _disabledSafetySettings : [],
         );
 
   GeminiTranslationDelegate.vertexAi({
+    required Model model,
     required String apiKey,
     required String projectUrl,
     required super.context,
@@ -27,7 +34,13 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     required super.useEscaping,
     required super.relaxSyntax,
   }) : _model = GenerativeModel(
-          model: 'gemini-pro',
+          model: switch (model) {
+            Model.gemini10Pro => Model.gemini10Pro.key,
+            Model.gemini15Pro ||
+            Model.gemini15Flash =>
+              '${model.key}-preview-0514',
+            _ => throw ArgumentError.value(model),
+          },
           apiKey: apiKey,
           safetySettings: disableSafety ? _disabledSafetySettings : [],
           httpClient: VertexHttpClient(projectUrl),
@@ -88,7 +101,8 @@ class GeminiTranslationDelegate extends TranslationDelegate {
       if (e.message
           .startsWith('Request had invalid authentication credentials.')) {
         throw InvalidApiKeyException();
-      } else if (e.message.startsWith('Quota exceeded')) {
+      } else if (e.message.startsWith('Quota exceeded') ||
+          e.message.startsWith('Resource has been exhausted')) {
         throw QuotaExceededException();
       }
 
@@ -100,6 +114,9 @@ class GeminiTranslationDelegate extends TranslationDelegate {
         throw SafetyException();
       }
 
+      rethrow;
+    } catch (e) {
+      print(e);
       rethrow;
     }
   }
@@ -120,7 +137,7 @@ class VertexHttpClient extends BaseClient {
   }) async {
     if (!url
         .toString()
-        .contains('https://generativelanguage.googleapis.com/v1/models')) {
+        .contains('https://generativelanguage.googleapis.com/v1beta/models')) {
       return _client.post(
         url,
         headers: headers,
@@ -131,7 +148,8 @@ class VertexHttpClient extends BaseClient {
 
     final response = await _client.post(
       Uri.parse(url.toString().replaceAll(
-          'https://generativelanguage.googleapis.com/v1/models', _projectUrl)),
+          'https://generativelanguage.googleapis.com/v1beta/models',
+          _projectUrl)),
       headers: {
         ...Map.fromEntries(
             headers?.entries.where((entry) => entry.key != 'x-goog-api-key') ??

@@ -13,6 +13,15 @@ class MissingApiKeyException implements OptionException {
       'ARB_TRANSLATE_API_KEY environment variable';
 }
 
+/// Exception thrown when the selected model doesn't match the selected model
+/// provider.
+class ModelProviderMismatchException implements OptionException {
+  @override
+  String get message =>
+      'Selected model does not match selected model provider. Select different '
+      'model or different model provider';
+}
+
 /// Exception thrown when a Vertex AI project URL is missing.
 class MissingVertexAiProjectUrlException implements OptionException {
   @override

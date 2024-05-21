@@ -68,7 +68,7 @@ abstract class TranslationDelegate {
       } else {
         batches.add(resourceWithMetadata);
 
-        lastBatchSize = key.length;
+        lastBatchSize = resourceSize;
       }
     }
 
