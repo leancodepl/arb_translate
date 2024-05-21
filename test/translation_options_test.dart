@@ -10,6 +10,7 @@ void main() {
         'resolve returns options with values from argResults over yamlResults',
         () {
           const argResultsModelProvider = ModelProvider.vertexAi;
+          const arbResultsModel = Model.gemini10Pro;
           const argResultsApiKey = 'argResultsApiKey';
           const argResultsVertexAiProjectUrl =
               'https://argResultsVertexAiProjectUrl/models';
@@ -24,6 +25,7 @@ void main() {
           final argResults = TranslateArgResults(
             help: false,
             modelProvider: argResultsModelProvider,
+            model: arbResultsModel,
             apiKey: argResultsApiKey,
             vertexAiProjectUrl: argResultsVertexAiProjectUrl,
             disableSafety: argResultsDisableSafety,
@@ -36,6 +38,7 @@ void main() {
           );
           final yamlResults = TranslateYamlResults(
             modelProvider: ModelProvider.gemini,
+            model: Model.gpt35Turbo,
             apiKey: 'yamlResultsApiKey',
             vertexAiProjectUrl: 'https://yamlResultsVertexAiProjectUrl/models',
             disableSafety: !argResultsDisableSafety,
@@ -60,6 +63,11 @@ void main() {
                   (options) => options.modelProvider,
                   'modelProvider',
                   argResultsModelProvider,
+                )
+                .having(
+                  (options) => options.model,
+                  'model',
+                  arbResultsModel,
                 )
                 .having(
                   (options) => options.apiKey,

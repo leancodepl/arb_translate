@@ -10,6 +10,7 @@ class TranslateArgResults {
   const TranslateArgResults({
     required this.help,
     required this.modelProvider,
+    required this.model,
     required this.apiKey,
     required this.vertexAiProjectUrl,
     required this.disableSafety,
@@ -26,6 +27,9 @@ class TranslateArgResults {
 
   /// The model provider for translation.
   final ModelProvider? modelProvider;
+
+  /// The model for translation.
+  final Model? model;
 
   /// The API key for translation.
   final String? apiKey;
@@ -59,6 +63,7 @@ class TranslateArgResults {
 class TranslateArgParser {
   static const _helpKey = 'help';
   static const _modelProviderKey = 'model-provider';
+  static const _modelKey = 'model';
   static const _apiKeyKey = 'api-key';
   static const _vertexAiProjectUrlKey = 'vertex-ai-project-url';
   static const _disableSafetyKey = 'disable-safety';
@@ -79,10 +84,18 @@ class TranslateArgParser {
       allowed: ModelProvider.values.map((provider) => provider.key),
       defaultsTo: ModelProvider.gemini.key,
       allowedHelp: {
-        ModelProvider.gemini.key: 'Gemini',
-        ModelProvider.vertexAi.key:
-            'Vertex AI (useful for users in regions where Gemini is unavailable'
-                ' such as EU)',
+        for (final model in Model.values) model.key: model.name,
+      },
+    )
+    ..addOption(
+      _modelKey,
+      help: 'The model to use for translation.',
+      allowed: Model.values.map((model) => model.key),
+      defaultsTo: Model.gemini10Pro.key,
+      allowedHelp: {
+        for (final model in Model.values)
+          model.key:
+              '${model.name} (${model.providers.map((provider) => provider.name).join(', ')})',
       },
     )
     ..addOption(
@@ -155,6 +168,11 @@ class TranslateArgParser {
             (provider) => provider.key == rawResults[_modelProviderKey],
           )
         : null;
+    final model = rawResults.wasParsed(_modelKey)
+        ? Model.values.firstWhereOrNull(
+            (model) => model.key == rawResults[_modelKey],
+          )
+        : null;
     final excludeLocales = rawResults.wasParsed(_excludeLocalesKey)
         ? rawResults[_excludeLocalesKey] as List<String>
         : null;
@@ -162,6 +180,7 @@ class TranslateArgParser {
     return TranslateArgResults(
       help: _getBoolIfParsed(rawResults, _helpKey),
       modelProvider: modelProvider,
+      model: model,
       apiKey: rawResults[_apiKeyKey] as String?,
       vertexAiProjectUrl: rawResults[_vertexAiProjectUrlKey] as String?,
       disableSafety: _getBoolIfParsed(rawResults, _disableSafetyKey),

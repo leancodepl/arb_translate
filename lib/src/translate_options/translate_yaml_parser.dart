@@ -6,6 +6,7 @@ import 'package:yaml/yaml.dart';
 class TranslateYamlResults {
   const TranslateYamlResults({
     required this.modelProvider,
+    required this.model,
     required this.apiKey,
     required this.vertexAiProjectUrl,
     required this.disableSafety,
@@ -20,6 +21,7 @@ class TranslateYamlResults {
   /// Creates an empty instance of [TranslateYamlResults].
   const TranslateYamlResults.empty()
       : modelProvider = null,
+        model = null,
         apiKey = null,
         vertexAiProjectUrl = null,
         disableSafety = null,
@@ -32,6 +34,9 @@ class TranslateYamlResults {
 
   /// The model provider for translation.
   final ModelProvider? modelProvider;
+
+  /// The model for translation.
+  final Model? model;
 
   /// The API key for translation.
   final String? apiKey;
@@ -64,6 +69,7 @@ class TranslateYamlResults {
 /// A class that parses YAML files containing translation options.
 class TranslateYamlParser {
   static const _modelProviderKey = 'arb-translate-model-provider';
+  static const _modelKey = 'arb-translate-model';
   static const _apiKeyKey = 'arb-translate-api-key';
   static const _vertexAiProjectUrlKey = 'arb-translate-vertex-ai-project-url';
   static const _disableSafetyKey = 'arb-translate-disable-safety';
@@ -95,6 +101,7 @@ class TranslateYamlParser {
 
     return TranslateYamlResults(
       modelProvider: _tryReadModelProvider(yamlNode, _modelProviderKey),
+      model: _tryReadModel(yamlNode, _modelKey),
       arbDir: _tryReadUri(yamlNode, TranslateOptions.arbDirKey)?.path,
       vertexAiProjectUrl:
           _tryReadUri(yamlNode, _vertexAiProjectUrlKey).toString(),
@@ -119,7 +126,22 @@ class TranslateYamlParser {
     return ModelProvider.values.firstWhere(
       (provider) => provider.key == value,
       orElse: () => throw FormatException(
-        'Expected "$key" to have a value of "google-ai-studio" or "vertex-ai", instead was "$value"',
+        'Expected "$key" to be equal to one of (${ModelProvider.values.map((provider) => provider.key).join(', ')}), instead was "$value"',
+      ),
+    );
+  }
+
+  static Model? _tryReadModel(YamlMap yamlMap, String key) {
+    final value = _tryReadString(yamlMap, key);
+
+    if (value == null) {
+      return null;
+    }
+
+    return Model.values.firstWhere(
+      (model) => model.key == value,
+      orElse: () => throw FormatException(
+        'Expected "$key" to be equal to one of (${Model.values.map((model) => model.key).join(', ')}), instead was "$value"',
       ),
     );
   }

@@ -1,5 +1,6 @@
 ## 1.0.0
 - Add ChatGPT support
+- Add model selection option
 
 ## 0.1.4
 - Improve reliability by trimming model response

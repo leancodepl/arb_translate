@@ -23,6 +23,7 @@ Future<void> translate(
 ) async {
   final translationDelegate = switch (options.modelProvider) {
     ModelProvider.gemini => GeminiTranslationDelegate(
+        model: options.model,
         apiKey: options.apiKey,
         context: options.context,
         disableSafety: options.disableSafety,
@@ -30,6 +31,7 @@ Future<void> translate(
         relaxSyntax: options.relaxSyntax,
       ),
     ModelProvider.vertexAi => GeminiTranslationDelegate.vertexAi(
+        model: options.model,
         apiKey: options.apiKey,
         projectUrl: options.vertexAiProjectUrl.toString(),
         context: options.context,
@@ -38,6 +40,7 @@ Future<void> translate(
         relaxSyntax: options.relaxSyntax,
       ),
     ModelProvider.openAi => ChatGptTranslationDelegate(
+        model: options.model,
         apiKey: options.apiKey,
         context: options.context,
         useEscaping: options.useEscaping,
