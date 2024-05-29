@@ -53,11 +53,10 @@ to provide:
 
 See `arb_translate --help` for more information.
 
-### Vertex AI configuration (for regions without Gemini API)
+### Vertex AI configuration
 
-Gemini API is not available in all regions such as EU. You can still use
-`arb_translate` but you need to access Gemini via Vertex AI service from Google
-Cloud Platform. Because of that configuration is a bit longer:
+You can use `arb_translate` with Vertex AI service from Google Cloud Platform
+but configuration is a bit longer:
 
 1. Create your GCP project and enable Vertex AI by following
    https://cloud.google.com/vertex-ai/docs/generative-ai/start/quickstarts/api-quickstart
