@@ -24,7 +24,9 @@ enum Model {
   gpt35Turbo('gpt-3.5-turbo', 'GPT-3.5 Turbo'),
   gpt4('gpt-4', 'GPT-4'),
   gpt4Turbo('gpt-4-turbo', 'GPT-4 Turbo'),
-  gpt4O('gpt-4o', 'GPT-4o');
+  gpt4O('gpt-4o', 'GPT-4o'),
+  gpt4OMini('gpt-4o-mini', 'GPT-4o-mini');
+
 
   const Model(this.key, this.name);
 
@@ -48,6 +50,7 @@ enum Model {
         Model.gpt4,
         Model.gpt4Turbo,
         Model.gpt4O,
+        Model.gpt4OMini,
       };
 }
 
