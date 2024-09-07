@@ -28,7 +28,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
   GeminiTranslationDelegate.vertexAi({
     required Model model,
     required String apiKey,
-    required String projectUrl,
+    required Uri projectUrl,
     required super.context,
     required bool disableSafety,
     required super.useEscaping,
@@ -43,7 +43,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
           },
           apiKey: apiKey,
           safetySettings: disableSafety ? _disabledSafetySettings : [],
-          httpClient: VertexHttpClient(projectUrl),
+          httpClient: VertexHttpClient(projectUrl.toString()),
         );
 
   @override

@@ -6,7 +6,9 @@ import 'package:yaml/yaml.dart';
 class TranslateYamlResults {
   const TranslateYamlResults({
     required this.modelProvider,
+    required this.customModelProviderBaseUrl,
     required this.model,
+    required this.customModel,
     required this.apiKey,
     required this.vertexAiProjectUrl,
     required this.disableSafety,
@@ -21,7 +23,9 @@ class TranslateYamlResults {
   /// Creates an empty instance of [TranslateYamlResults].
   const TranslateYamlResults.empty()
       : modelProvider = null,
+        customModelProviderBaseUrl = null,
         model = null,
+        customModel = null,
         apiKey = null,
         vertexAiProjectUrl = null,
         disableSafety = null,
@@ -38,11 +42,17 @@ class TranslateYamlResults {
   /// The model for translation.
   final Model? model;
 
+  /// The custom model for translation.
+  final String? customModel;
+
   /// The API key for translation.
   final String? apiKey;
 
   /// The URL of the Vertex AI project.
   final String? vertexAiProjectUrl;
+
+  /// The custom model provider base URL for translation.
+  final String? customModelProviderBaseUrl;
 
   /// Indicates whether safety checks are disabled.
   final bool? disableSafety;
@@ -70,8 +80,11 @@ class TranslateYamlResults {
 class TranslateYamlParser {
   static const _modelProviderKey = 'arb-translate-model-provider';
   static const _modelKey = 'arb-translate-model';
+  static const _customModelKey = 'arb-translate-custom-model';
   static const _apiKeyKey = 'arb-translate-api-key';
   static const _vertexAiProjectUrlKey = 'arb-translate-vertex-ai-project-url';
+  static const _customModelProviderBaseUrlKey =
+      'arb-translate-custom-model-provider-base-url';
   static const _disableSafetyKey = 'arb-translate-disable-safety';
   static const _contextKey = 'arb-translate-context';
   static const _excludeLocalesKey = 'arb-translate-exclude-locales';
@@ -102,9 +115,12 @@ class TranslateYamlParser {
     return TranslateYamlResults(
       modelProvider: _tryReadModelProvider(yamlNode, _modelProviderKey),
       model: _tryReadModel(yamlNode, _modelKey),
+      customModel: _tryReadString(yamlNode, _customModelKey),
       arbDir: _tryReadUri(yamlNode, TranslateOptions.arbDirKey)?.path,
       vertexAiProjectUrl:
           _tryReadUri(yamlNode, _vertexAiProjectUrlKey).toString(),
+      customModelProviderBaseUrl:
+          _tryReadUri(yamlNode, _customModelProviderBaseUrlKey).toString(),
       disableSafety: _tryReadBool(yamlNode, _disableSafetyKey),
       context: _tryReadString(yamlNode, _contextKey),
       excludeLocales: _tryReadStringList(yamlNode, _excludeLocalesKey),

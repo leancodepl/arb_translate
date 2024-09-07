@@ -11,8 +11,10 @@ class TranslateArgResults {
     required this.help,
     required this.modelProvider,
     required this.model,
+    required this.customModel,
     required this.apiKey,
     required this.vertexAiProjectUrl,
+    required this.customModelProviderBaseUrl,
     required this.disableSafety,
     required this.context,
     required this.excludeLocales,
@@ -31,11 +33,17 @@ class TranslateArgResults {
   /// The model for translation.
   final Model? model;
 
+  /// The custom model for translation.
+  final String? customModel;
+
   /// The API key for translation.
   final String? apiKey;
 
   /// The URL of the Vertex AI project.
   final String? vertexAiProjectUrl;
+
+  /// The custom model provider base URL for translation.
+  final String? customModelProviderBaseUrl;
 
   /// Indicates whether safety checks are disabled.
   final bool? disableSafety;
@@ -63,9 +71,13 @@ class TranslateArgResults {
 class TranslateArgParser {
   static const _helpKey = 'help';
   static const _modelProviderKey = 'model-provider';
+
   static const _modelKey = 'model';
+  static const _customModelKey = 'custom-model';
   static const _apiKeyKey = 'api-key';
   static const _vertexAiProjectUrlKey = 'vertex-ai-project-url';
+  static const _customModelProviderBaseUrlKey =
+      'custom-model-provider-base-url';
   static const _disableSafetyKey = 'disable-safety';
   static const _contextKey = 'context';
   static const _excludeLocalesKey = 'exclude-locales';
@@ -99,12 +111,21 @@ class TranslateArgParser {
       },
     )
     ..addOption(
+      _customModelKey,
+      help:
+          'The model to use for translation for custom Open AI compatible model provider.',
+    )
+    ..addOption(
       _apiKeyKey,
       help: 'API key used to make translation requests.',
     )
     ..addOption(
       _vertexAiProjectUrlKey,
       help: 'The URL of the Vertex AI project to use for translation.',
+    )
+    ..addOption(
+      _customModelProviderBaseUrlKey,
+      help: 'The base URL of the custom model provider.',
     )
     ..addFlag(
       _disableSafetyKey,
@@ -181,8 +202,11 @@ class TranslateArgParser {
       help: _getBoolIfParsed(rawResults, _helpKey),
       modelProvider: modelProvider,
       model: model,
+      customModel: rawResults[_customModelKey] as String?,
       apiKey: rawResults[_apiKeyKey] as String?,
       vertexAiProjectUrl: rawResults[_vertexAiProjectUrlKey] as String?,
+      customModelProviderBaseUrl:
+          rawResults[_customModelProviderBaseUrlKey] as String?,
       disableSafety: _getBoolIfParsed(rawResults, _disableSafetyKey),
       context: rawResults[_contextKey] as String?,
       excludeLocales: excludeLocales,

@@ -47,7 +47,7 @@ void main() {
       );
 
       group(
-        'using Gemini API',
+        'using Vertex AI API',
         () {
           setUpAll(
             () {
@@ -71,8 +71,8 @@ void main() {
             return GeminiTranslationDelegate.vertexAi(
               model: model,
               apiKey: Platform.environment['ARB_TRANSLATE_VERTEX_AI_API_KEY']!,
-              projectUrl:
-                  Platform.environment['ARB_TRANSLATE_VERTEX_AI_PROJECT_URL']!,
+              projectUrl: Uri.parse(
+                  Platform.environment['ARB_TRANSLATE_VERTEX_AI_PROJECT_URL']!),
               context: context,
               disableSafety: false,
               useEscaping: false,

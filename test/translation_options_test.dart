@@ -10,7 +10,10 @@ void main() {
         'resolve returns options with values from argResults over yamlResults',
         () {
           const argResultsModelProvider = ModelProvider.vertexAi;
-          const arbResultsModel = Model.gemini10Pro;
+          const argResultsCustomModelProviderUrl =
+              'http://argResultsCustomModelProviderBaseUrl';
+          const argResultsModel = Model.gemini10Pro;
+          const argResultsCustomModel = 'argResultsCustomModel';
           const argResultsApiKey = 'argResultsApiKey';
           const argResultsVertexAiProjectUrl =
               'https://argResultsVertexAiProjectUrl/models';
@@ -25,7 +28,9 @@ void main() {
           final argResults = TranslateArgResults(
             help: false,
             modelProvider: argResultsModelProvider,
-            model: arbResultsModel,
+            customModelProviderBaseUrl: argResultsCustomModelProviderUrl,
+            model: argResultsModel,
+            customModel: argResultsCustomModel,
             apiKey: argResultsApiKey,
             vertexAiProjectUrl: argResultsVertexAiProjectUrl,
             disableSafety: argResultsDisableSafety,
@@ -38,7 +43,10 @@ void main() {
           );
           final yamlResults = TranslateYamlResults(
             modelProvider: ModelProvider.gemini,
+            customModelProviderBaseUrl:
+                'http://yamlResultsCustomModelProviderBaseUrl',
             model: Model.gpt35Turbo,
+            customModel: 'yamlResultsCustomModel',
             apiKey: 'yamlResultsApiKey',
             vertexAiProjectUrl: 'https://yamlResultsVertexAiProjectUrl/models',
             disableSafety: !argResultsDisableSafety,
@@ -65,9 +73,19 @@ void main() {
                   argResultsModelProvider,
                 )
                 .having(
+                  (options) => options.customModelProviderBaseUrl,
+                  'customModelProviderBaseUrl',
+                  Uri.parse(argResultsCustomModelProviderUrl),
+                )
+                .having(
                   (options) => options.model,
                   'model',
-                  arbResultsModel,
+                  argResultsModel,
+                )
+                .having(
+                  (options) => options.customModel,
+                  'customModel',
+                  argResultsCustomModel,
                 )
                 .having(
                   (options) => options.apiKey,
