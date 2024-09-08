@@ -10,13 +10,17 @@ void main() {
         'resolve returns options with values from argResults over yamlResults',
         () {
           const argResultsModelProvider = ModelProvider.vertexAi;
-          const arbResultsModel = Model.gemini10Pro;
+          const argResultsCustomModelProviderUrl =
+              'http://argResultsCustomModelProviderBaseUrl';
+          const argResultsModel = Model.gemini10Pro;
+          const argResultsCustomModel = 'argResultsCustomModel';
           const argResultsApiKey = 'argResultsApiKey';
           const argResultsVertexAiProjectUrl =
               'https://argResultsVertexAiProjectUrl/models';
           const argResultsDisableSafety = true;
           const argResultsContext = 'argResultsContext';
           const argResultsExcludeLocales = ['pl'];
+          const argResultsBatchSize = 4096;
           const argResultsArbDir = 'argResultsArbDir';
           const argResultsTemplateArbFile = 'argResultsTemplateArbFile';
           const argResultsUseEscaping = true;
@@ -25,12 +29,15 @@ void main() {
           final argResults = TranslateArgResults(
             help: false,
             modelProvider: argResultsModelProvider,
-            model: arbResultsModel,
+            customModelProviderBaseUrl: argResultsCustomModelProviderUrl,
+            model: argResultsModel,
+            customModel: argResultsCustomModel,
             apiKey: argResultsApiKey,
             vertexAiProjectUrl: argResultsVertexAiProjectUrl,
             disableSafety: argResultsDisableSafety,
             context: argResultsContext,
             excludeLocales: argResultsExcludeLocales,
+            batchSize: argResultsBatchSize,
             arbDir: argResultsArbDir,
             templateArbFile: argResultsTemplateArbFile,
             useEscaping: argResultsUseEscaping,
@@ -38,12 +45,16 @@ void main() {
           );
           final yamlResults = TranslateYamlResults(
             modelProvider: ModelProvider.gemini,
+            customModelProviderBaseUrl:
+                'http://yamlResultsCustomModelProviderBaseUrl',
             model: Model.gpt35Turbo,
+            customModel: 'yamlResultsCustomModel',
             apiKey: 'yamlResultsApiKey',
             vertexAiProjectUrl: 'https://yamlResultsVertexAiProjectUrl/models',
             disableSafety: !argResultsDisableSafety,
             context: 'yamlResultsContext',
             excludeLocales: ['en'],
+            batchSize: 2048,
             arbDir: 'yamlResultsArbDir',
             templateArbFile: 'yamlResultsTemplateArbFile',
             useEscaping: !argResultsUseEscaping,
@@ -65,9 +76,19 @@ void main() {
                   argResultsModelProvider,
                 )
                 .having(
+                  (options) => options.customModelProviderBaseUrl,
+                  'customModelProviderBaseUrl',
+                  Uri.parse(argResultsCustomModelProviderUrl),
+                )
+                .having(
                   (options) => options.model,
                   'model',
-                  arbResultsModel,
+                  argResultsModel,
+                )
+                .having(
+                  (options) => options.customModel,
+                  'customModel',
+                  argResultsCustomModel,
                 )
                 .having(
                   (options) => options.apiKey,
@@ -93,6 +114,11 @@ void main() {
                   (options) => options.excludeLocales,
                   'excludeLocales',
                   argResultsExcludeLocales,
+                )
+                .having(
+                  (options) => options.batchSize,
+                  'batchSize',
+                  argResultsBatchSize,
                 )
                 .having(
                   (options) => options.arbDir,

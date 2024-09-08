@@ -11,6 +11,7 @@ class GeminiTranslationDelegate extends TranslationDelegate {
   GeminiTranslationDelegate({
     required Model model,
     required String apiKey,
+    required super.batchSize,
     required super.context,
     required bool disableSafety,
     required super.useEscaping,
@@ -28,7 +29,8 @@ class GeminiTranslationDelegate extends TranslationDelegate {
   GeminiTranslationDelegate.vertexAi({
     required Model model,
     required String apiKey,
-    required String projectUrl,
+    required Uri projectUrl,
+    required super.batchSize,
     required super.context,
     required bool disableSafety,
     required super.useEscaping,
@@ -43,11 +45,9 @@ class GeminiTranslationDelegate extends TranslationDelegate {
           },
           apiKey: apiKey,
           safetySettings: disableSafety ? _disabledSafetySettings : [],
-          httpClient: VertexHttpClient(projectUrl),
+          httpClient: VertexHttpClient(projectUrl.toString()),
         );
 
-  @override
-  int get batchSize => 4096;
   @override
   int get maxRetryCount => 5;
   @override

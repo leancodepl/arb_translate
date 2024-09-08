@@ -6,12 +6,15 @@ import 'package:yaml/yaml.dart';
 class TranslateYamlResults {
   const TranslateYamlResults({
     required this.modelProvider,
+    required this.customModelProviderBaseUrl,
     required this.model,
+    required this.customModel,
     required this.apiKey,
     required this.vertexAiProjectUrl,
     required this.disableSafety,
     required this.context,
     required this.excludeLocales,
+    required this.batchSize,
     required this.arbDir,
     required this.templateArbFile,
     required this.useEscaping,
@@ -21,12 +24,15 @@ class TranslateYamlResults {
   /// Creates an empty instance of [TranslateYamlResults].
   const TranslateYamlResults.empty()
       : modelProvider = null,
+        customModelProviderBaseUrl = null,
         model = null,
+        customModel = null,
         apiKey = null,
         vertexAiProjectUrl = null,
         disableSafety = null,
         context = null,
         excludeLocales = null,
+        batchSize = null,
         arbDir = null,
         templateArbFile = null,
         useEscaping = null,
@@ -38,11 +44,17 @@ class TranslateYamlResults {
   /// The model for translation.
   final Model? model;
 
+  /// The custom model for translation.
+  final String? customModel;
+
   /// The API key for translation.
   final String? apiKey;
 
   /// The URL of the Vertex AI project.
   final String? vertexAiProjectUrl;
+
+  /// The custom model provider base URL for translation.
+  final String? customModelProviderBaseUrl;
 
   /// Indicates whether safety checks are disabled.
   final bool? disableSafety;
@@ -52,6 +64,10 @@ class TranslateYamlResults {
 
   /// The list of locales to exclude from translation.
   final List<String>? excludeLocales;
+
+  /// The target number of characters of messages to send to a model in a single
+  /// batch. The actual number can be higher if a single message is too large.
+  final int? batchSize;
 
   /// The directory containing the ARB files.
   final String? arbDir;
@@ -70,11 +86,15 @@ class TranslateYamlResults {
 class TranslateYamlParser {
   static const _modelProviderKey = 'arb-translate-model-provider';
   static const _modelKey = 'arb-translate-model';
+  static const _customModelKey = 'arb-translate-custom-model';
   static const _apiKeyKey = 'arb-translate-api-key';
   static const _vertexAiProjectUrlKey = 'arb-translate-vertex-ai-project-url';
+  static const _customModelProviderBaseUrlKey =
+      'arb-translate-custom-model-provider-base-url';
   static const _disableSafetyKey = 'arb-translate-disable-safety';
   static const _contextKey = 'arb-translate-context';
   static const _excludeLocalesKey = 'arb-translate-exclude-locales';
+  static const _batchSizeKey = 'arb-translate-batch-size';
 
   /// Parses the given [file] and returns the translation options.
   ///
@@ -102,12 +122,16 @@ class TranslateYamlParser {
     return TranslateYamlResults(
       modelProvider: _tryReadModelProvider(yamlNode, _modelProviderKey),
       model: _tryReadModel(yamlNode, _modelKey),
+      customModel: _tryReadString(yamlNode, _customModelKey),
       arbDir: _tryReadUri(yamlNode, TranslateOptions.arbDirKey)?.path,
       vertexAiProjectUrl:
           _tryReadUri(yamlNode, _vertexAiProjectUrlKey).toString(),
+      customModelProviderBaseUrl:
+          _tryReadUri(yamlNode, _customModelProviderBaseUrlKey).toString(),
       disableSafety: _tryReadBool(yamlNode, _disableSafetyKey),
       context: _tryReadString(yamlNode, _contextKey),
       excludeLocales: _tryReadStringList(yamlNode, _excludeLocalesKey),
+      batchSize: _tryReadInt(yamlNode, _batchSizeKey),
       templateArbFile:
           _tryReadUri(yamlNode, TranslateOptions.templateArbFileKey)?.path,
       apiKey: _tryReadString(yamlNode, _apiKeyKey),
@@ -190,6 +214,22 @@ class TranslateYamlParser {
     if (value is! bool) {
       throw FormatException(
         'Expected "$key" to have a bool value, instead was "$value"',
+      );
+    }
+
+    return value;
+  }
+
+  static int? _tryReadInt(YamlMap yamlMap, String key) {
+    final Object? value = yamlMap[key];
+
+    if (value == null) {
+      return null;
+    }
+
+    if (value is! int) {
+      throw FormatException(
+        'Expected "$key" to have a int value, instead was "$value"',
       );
     }
 

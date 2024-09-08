@@ -1,3 +1,6 @@
+## 1.1.0
+- Add custom model support
+
 ## 1.0.0
 - Add ChatGPT support
 - Add model selection option

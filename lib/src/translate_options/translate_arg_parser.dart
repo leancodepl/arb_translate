@@ -11,9 +11,12 @@ class TranslateArgResults {
     required this.help,
     required this.modelProvider,
     required this.model,
+    required this.customModel,
     required this.apiKey,
     required this.vertexAiProjectUrl,
+    required this.customModelProviderBaseUrl,
     required this.disableSafety,
+    required this.batchSize,
     required this.context,
     required this.excludeLocales,
     required this.arbDir,
@@ -31,11 +34,17 @@ class TranslateArgResults {
   /// The model for translation.
   final Model? model;
 
+  /// The custom model for translation.
+  final String? customModel;
+
   /// The API key for translation.
   final String? apiKey;
 
   /// The URL of the Vertex AI project.
   final String? vertexAiProjectUrl;
+
+  /// The custom model provider base URL for translation.
+  final String? customModelProviderBaseUrl;
 
   /// Indicates whether safety checks are disabled.
   final bool? disableSafety;
@@ -45,6 +54,10 @@ class TranslateArgResults {
 
   /// The list of locales to exclude from translation.
   final List<String>? excludeLocales;
+
+  /// The target number of characters of messages to send to a model in a single
+  /// batch. The actual number can be higher if a single message is too large.
+  final int? batchSize;
 
   /// The directory containing the ARB files.
   final String? arbDir;
@@ -63,12 +76,17 @@ class TranslateArgResults {
 class TranslateArgParser {
   static const _helpKey = 'help';
   static const _modelProviderKey = 'model-provider';
+
   static const _modelKey = 'model';
+  static const _customModelKey = 'custom-model';
   static const _apiKeyKey = 'api-key';
   static const _vertexAiProjectUrlKey = 'vertex-ai-project-url';
+  static const _customModelProviderBaseUrlKey =
+      'custom-model-provider-base-url';
   static const _disableSafetyKey = 'disable-safety';
   static const _contextKey = 'context';
   static const _excludeLocalesKey = 'exclude-locales';
+  static const _batchSizeKey = 'batch-size';
 
   final _parser = ArgParser(
       usageLineLength: stdout.hasTerminal ? stdout.terminalColumns : null)
@@ -99,12 +117,21 @@ class TranslateArgParser {
       },
     )
     ..addOption(
+      _customModelKey,
+      help: 'The model to use for translation for custom Open AI compatible '
+          'model provider.',
+    )
+    ..addOption(
       _apiKeyKey,
       help: 'API key used to make translation requests.',
     )
     ..addOption(
       _vertexAiProjectUrlKey,
       help: 'The URL of the Vertex AI project to use for translation.',
+    )
+    ..addOption(
+      _customModelProviderBaseUrlKey,
+      help: 'The base URL of the custom model provider.',
     )
     ..addFlag(
       _disableSafetyKey,
@@ -118,6 +145,14 @@ class TranslateArgParser {
     ..addMultiOption(
       _excludeLocalesKey,
       help: 'Comma separated list of locales to be excluded from translation.',
+    )
+    ..addOption(
+      _batchSizeKey,
+      help:
+          'The target number of characters of messages to send to a model in a '
+          'single batch. The actual number can be higher if a single message '
+          'is too large.',
+      defaultsTo: '4096',
     )
     ..addSeparator('ARB options:')
     ..addOption(
@@ -176,16 +211,23 @@ class TranslateArgParser {
     final excludeLocales = rawResults.wasParsed(_excludeLocalesKey)
         ? rawResults[_excludeLocalesKey] as List<String>
         : null;
+    final batchSize = rawResults.wasParsed(_batchSizeKey)
+        ? int.parse(rawResults[_batchSizeKey] as String)
+        : null;
 
     return TranslateArgResults(
       help: _getBoolIfParsed(rawResults, _helpKey),
       modelProvider: modelProvider,
       model: model,
+      customModel: rawResults[_customModelKey] as String?,
       apiKey: rawResults[_apiKeyKey] as String?,
       vertexAiProjectUrl: rawResults[_vertexAiProjectUrlKey] as String?,
+      customModelProviderBaseUrl:
+          rawResults[_customModelProviderBaseUrlKey] as String?,
       disableSafety: _getBoolIfParsed(rawResults, _disableSafetyKey),
       context: rawResults[_contextKey] as String?,
       excludeLocales: excludeLocales,
+      batchSize: batchSize,
       arbDir: rawResults[TranslateOptions.arbDirKey] as String?,
       templateArbFile:
           rawResults[TranslateOptions.templateArbFileKey] as String?,

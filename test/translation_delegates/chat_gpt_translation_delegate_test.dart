@@ -24,6 +24,7 @@ void main() {
         return ChatGptTranslationDelegate(
           model: model,
           apiKey: Platform.environment['ARB_TRANSLATE_OPEN_AI_API_KEY']!,
+          batchSize: 4096,
           context: context,
           useEscaping: false,
           relaxSyntax: false,

@@ -25,6 +25,7 @@ Future<void> translate(
     ModelProvider.gemini => GeminiTranslationDelegate(
         model: options.model,
         apiKey: options.apiKey,
+        batchSize: options.batchSize,
         context: options.context,
         disableSafety: options.disableSafety,
         useEscaping: options.useEscaping,
@@ -33,7 +34,8 @@ Future<void> translate(
     ModelProvider.vertexAi => GeminiTranslationDelegate.vertexAi(
         model: options.model,
         apiKey: options.apiKey,
-        projectUrl: options.vertexAiProjectUrl.toString(),
+        projectUrl: options.vertexAiProjectUrl!,
+        batchSize: options.batchSize,
         context: options.context,
         disableSafety: options.disableSafety,
         useEscaping: options.useEscaping,
@@ -42,6 +44,16 @@ Future<void> translate(
     ModelProvider.openAi => ChatGptTranslationDelegate(
         model: options.model,
         apiKey: options.apiKey,
+        batchSize: options.batchSize,
+        context: options.context,
+        useEscaping: options.useEscaping,
+        relaxSyntax: options.relaxSyntax,
+      ),
+    ModelProvider.customOpenAiCompatible => ChatGptTranslationDelegate.custom(
+        model: options.customModel!,
+        apiKey: options.apiKey,
+        baseUrl: options.customModelProviderBaseUrl!,
+        batchSize: options.batchSize,
         context: options.context,
         useEscaping: options.useEscaping,
         relaxSyntax: options.relaxSyntax,

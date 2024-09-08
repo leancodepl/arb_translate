@@ -9,16 +9,17 @@ import 'package:meta/meta.dart';
 
 abstract class TranslationDelegate {
   const TranslationDelegate({
+    required this.batchSize,
     required this.context,
     required this.useEscaping,
     required this.relaxSyntax,
   });
 
+  final int batchSize;
   final String? context;
   final bool useEscaping;
   final bool relaxSyntax;
 
-  int get batchSize;
   int get maxRetryCount;
   int get maxParallelQueries;
   Duration get queryBackoff;
@@ -61,7 +62,7 @@ abstract class TranslationDelegate {
       };
       final resourceSize = json.encode(resourceWithMetadata).length;
 
-      if (lastBatchSize + resourceSize <= batchSize) {
+      if (lastBatchSize == 0 || lastBatchSize + resourceSize <= batchSize) {
         batches.last.addAll(resourceWithMetadata);
 
         lastBatchSize += resourceSize;

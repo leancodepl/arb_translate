@@ -8,20 +8,33 @@ import 'package:dart_openai/dart_openai.dart';
 
 class ChatGptTranslationDelegate extends TranslationDelegate {
   ChatGptTranslationDelegate({
-    required this.model,
+    required Model model,
     required String apiKey,
+    required super.batchSize,
     required super.context,
     required super.useEscaping,
     required super.relaxSyntax,
-  }) {
+  }) : _model = model.key {
     OpenAI.apiKey = apiKey;
     OpenAI.requestsTimeOut = Duration(minutes: 2);
   }
 
-  final Model model;
+  ChatGptTranslationDelegate.custom({
+    required String model,
+    required String apiKey,
+    required Uri baseUrl,
+    required super.batchSize,
+    required super.context,
+    required super.useEscaping,
+    required super.relaxSyntax,
+  }) : _model = model {
+    OpenAI.apiKey = apiKey;
+    OpenAI.requestsTimeOut = Duration(minutes: 60);
+    OpenAI.baseUrl = baseUrl.toString();
+  }
 
-  @override
-  int get batchSize => 4096;
+  final String _model;
+
   @override
   int get maxRetryCount => 5;
   @override
@@ -52,8 +65,9 @@ class ChatGptTranslationDelegate extends TranslationDelegate {
 
     try {
       final response = (await OpenAI.instance.chat.create(
-        model: model.key,
-        responseFormat: model != Model.gpt4 ? {"type": "json_object"} : null,
+        model: _model,
+        responseFormat:
+            _model != Model.gpt4.key ? {"type": "json_object"} : null,
         messages: prompt,
       ))
           .choices

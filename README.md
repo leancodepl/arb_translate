@@ -54,7 +54,6 @@ to provide:
 See `arb_translate --help` for more information.
 
 ### Vertex AI configuration
-
 You can use `arb_translate` with Vertex AI service from Google Cloud Platform
 but configuration is a bit longer:
 
@@ -67,12 +66,28 @@ but configuration is a bit longer:
 3. Save your API token in the environment variable `ARB_TRANSLATE_API_KEY` or
    add `arb-translate-api-key: {your-api-key}` to `l10n.yaml` or specify as
    command argument `--api-key {your-api-key}`
-4. Add `arb-translate-vertex-ai-project-url: {your-project-url}` to `l10n.yaml`
+4. Add `arb-translate-model-provider: vertex-ai` to `l10n.yaml` or specify as
+   command argument `--model-provider: vertex-ai`
+5. Add `arb-translate-vertex-ai-project-url: {your-project-url}` to `l10n.yaml`
    or specify as command argument `--vertex-ai-project-url {your-project-url}`.
    Project url should look like this
    `https://{region}-aiplatform.googleapis.com/v1/projects/{your-project-id}/locations/{region}/publishers/google/models`
-5. Add `arb-translate-model-provider: vertex-ai` to `l10n.yaml` or specify as
-   command argument `--model-provider: vertex-ai`
+
+
+### Custom model configuration
+You can use `arb_translate` with any model with an OpenAI-compatible API. To configure a custom model:
+
+1. Add `arb-translate-model-provider: custom` to `l10n.yaml` or specify as
+   command argument `--model-provider: custom`
+2. Add `arb-translate-custom-model: {your-model-name}` to `l10n.yaml` or specify
+   as command argument `custom-model: {your-model-name}`
+3. Add `arb-translate-custom-model-provider-base-url: {your-model-url}` to 
+   `l10n.yaml` or specify as command argument: `--custom-model-provider-base-url: {your-model-url}`
+4. (Optional) Set target batch size appropriately to model token count limits by
+   adding `arb-translate-batch-size: {size}` to your `l10n.yaml` or specify as
+   command argument `batch-size: {size}`. Batch size is the number of characters
+   of ARB messages in a single batch and does not include the prompt or app
+   context.
 
 ## Usage
 To generate translations, simply call arb_translate. All messages included in

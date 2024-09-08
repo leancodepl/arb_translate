@@ -5,6 +5,7 @@ import 'package:test/test.dart';
 class NoOpTranslationDelegate extends TranslationDelegate {
   const NoOpTranslationDelegate()
       : super(
+          batchSize: 4096,
           context: null,
           useEscaping: false,
           relaxSyntax: false,
