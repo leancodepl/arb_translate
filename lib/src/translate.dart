@@ -50,6 +50,7 @@ Future<void> translate(
         model: options.customModel!,
         apiKey: options.apiKey,
         baseUrl: options.customModelProviderBaseUrl!,
+        batchSize: options.customModelBatchSize!,
         context: options.context,
         useEscaping: options.useEscaping,
         relaxSyntax: options.relaxSyntax,

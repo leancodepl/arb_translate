@@ -65,6 +65,7 @@ class TranslateOptions {
     required this.vertexAiProjectUrl,
     required this.customModelProviderBaseUrl,
     required bool? disableSafety,
+    required int? customModelBatchSize,
     required this.context,
     required this.arbDir,
     required String? templateArbFile,
@@ -90,6 +91,7 @@ class TranslateOptions {
   final Uri? vertexAiProjectUrl;
   final Uri? customModelProviderBaseUrl;
   final bool disableSafety;
+  final bool customModelBatchSize;
   final String? context;
   final String arbDir;
   final String templateArbFile;
@@ -188,6 +190,8 @@ class TranslateOptions {
       apiKey: apiKey,
       vertexAiProjectUrl: vertexAiProjectUrl,
       disableSafety: argResults.disableSafety ?? yamlResults.disableSafety,
+      customModelBatchSize:
+          argResults.customModelBatchSize ?? yamlResults.customModelBatchSize,
       context: context,
       arbDir: argResults.arbDir ??
           yamlResults.arbDir ??

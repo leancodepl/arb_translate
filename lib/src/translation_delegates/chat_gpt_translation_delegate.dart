@@ -13,7 +13,8 @@ class ChatGptTranslationDelegate extends TranslationDelegate {
     required super.context,
     required super.useEscaping,
     required super.relaxSyntax,
-  }) : _model = model.key {
+  })  : _model = model.key,
+        batchSize = 4096 {
     OpenAI.apiKey = apiKey;
     OpenAI.requestsTimeOut = Duration(minutes: 2);
   }
@@ -22,6 +23,7 @@ class ChatGptTranslationDelegate extends TranslationDelegate {
     required String model,
     required String apiKey,
     required Uri baseUrl,
+    required this.batchSize,
     required super.context,
     required super.useEscaping,
     required super.relaxSyntax,
@@ -34,7 +36,7 @@ class ChatGptTranslationDelegate extends TranslationDelegate {
   final String _model;
 
   @override
-  int get batchSize => 4096;
+  final int batchSize;
   @override
   int get maxRetryCount => 5;
   @override

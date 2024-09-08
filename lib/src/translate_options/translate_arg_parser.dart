@@ -16,6 +16,7 @@ class TranslateArgResults {
     required this.vertexAiProjectUrl,
     required this.customModelProviderBaseUrl,
     required this.disableSafety,
+    required this.customModelBatchSize,
     required this.context,
     required this.excludeLocales,
     required this.arbDir,
@@ -47,6 +48,9 @@ class TranslateArgResults {
 
   /// Indicates whether safety checks are disabled.
   final bool? disableSafety;
+
+  /// The custom model batch size for translation.
+  final int? customModelBatchSize;
 
   /// The context for translation.
   final String? context;
@@ -197,6 +201,9 @@ class TranslateArgParser {
     final excludeLocales = rawResults.wasParsed(_excludeLocalesKey)
         ? rawResults[_excludeLocalesKey] as List<String>
         : null;
+    final customModelBatchSize = rawResults.wasParsed(_batchSizeKey)
+        ? int.tryParse(rawResults[_batchSizeKey] as String)
+        : null;
 
     return TranslateArgResults(
       help: _getBoolIfParsed(rawResults, _helpKey),
@@ -208,6 +215,7 @@ class TranslateArgParser {
       customModelProviderBaseUrl:
           rawResults[_customModelProviderBaseUrlKey] as String?,
       disableSafety: _getBoolIfParsed(rawResults, _disableSafetyKey),
+      customModelBatchSize: customModelBatchSize,
       context: rawResults[_contextKey] as String?,
       excludeLocales: excludeLocales,
       arbDir: rawResults[TranslateOptions.arbDirKey] as String?,
