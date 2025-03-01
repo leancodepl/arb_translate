@@ -31,7 +31,7 @@ steps:
    argument `--model-provider: open-ai`
 
 4. (Optional) Select model used for translation. To do it add
-   `arb-translate-model` to `l10n.yaml` or use command argument `--model`. The available options are `[gemini-1.0-pro (default for Gemini), gemini-1.5-pro, gemini-1.5-flash, gemini-2.0-flash, gemini-2.0-flash-lite, gpt-3.5-turbo (default for OpenAI), gpt-4, gpt-4-turbo, gpt-4o, gpt-4o-mini]`
+   `arb-translate-model` to `l10n.yaml` or use command argument `--model`. The available options are `[gemini-1.5-pro, gemini-1.5-flash, gemini-2.0-flash (default for Gemini), gemini-2.0-flash-lite, gpt-3.5-turbo (default for OpenAI), gpt-4, gpt-4-turbo, gpt-4o, gpt-4o-mini]`
 
 5. (Optional) Add context of your application
    `arb-translate-context: {your-app-context}` eg. "sporting goods store app"
