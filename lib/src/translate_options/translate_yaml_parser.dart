@@ -23,20 +23,20 @@ class TranslateYamlResults {
 
   /// Creates an empty instance of [TranslateYamlResults].
   const TranslateYamlResults.empty()
-      : modelProvider = null,
-        customModelProviderBaseUrl = null,
-        model = null,
-        customModel = null,
-        apiKey = null,
-        vertexAiProjectUrl = null,
-        disableSafety = null,
-        context = null,
-        excludeLocales = null,
-        batchSize = null,
-        arbDir = null,
-        templateArbFile = null,
-        useEscaping = null,
-        relaxSyntax = null;
+    : modelProvider = null,
+      customModelProviderBaseUrl = null,
+      model = null,
+      customModel = null,
+      apiKey = null,
+      vertexAiProjectUrl = null,
+      disableSafety = null,
+      context = null,
+      excludeLocales = null,
+      batchSize = null,
+      arbDir = null,
+      templateArbFile = null,
+      useEscaping = null,
+      relaxSyntax = null;
 
   /// The model provider for translation.
   final ModelProvider? modelProvider;
@@ -149,9 +149,11 @@ class TranslateYamlParser {
 
     return ModelProvider.values.firstWhere(
       (provider) => provider.key == value,
-      orElse: () => throw FormatException(
-        'Expected "$key" to be equal to one of (${ModelProvider.values.map((provider) => provider.key).join(', ')}), instead was "$value"',
-      ),
+      orElse:
+          () =>
+              throw FormatException(
+                'Expected "$key" to be equal to one of (${ModelProvider.values.map((provider) => provider.key).join(', ')}), instead was "$value"',
+              ),
     );
   }
 
@@ -164,9 +166,11 @@ class TranslateYamlParser {
 
     return Model.values.firstWhere(
       (model) => model.key == value,
-      orElse: () => throw FormatException(
-        'Expected "$key" to be equal to one of (${Model.values.map((model) => model.key).join(', ')}), instead was "$value"',
-      ),
+      orElse:
+          () =>
+              throw FormatException(
+                'Expected "$key" to be equal to one of (${Model.values.map((model) => model.key).join(', ')}), instead was "$value"',
+              ),
     );
   }
 
@@ -252,6 +256,7 @@ class TranslateYamlParser {
     }
 
     throw FormatException(
-        'Expected "$key" to have a String or List value, instead was "$value"');
+      'Expected "$key" to have a String or List value, instead was "$value"',
+    );
   }
 }
