@@ -19,7 +19,6 @@ enum ModelProvider {
 
 /// Enum representing the available models.
 enum Model {
-  gemini10Pro('gemini-1.0-pro', 'Gemini 1.0 Pro'),
   gemini15Pro('gemini-1.5-pro', 'Gemini 1.5 Pro'),
   gemini15Flash('gemini-1.5-flash', 'Gemini 1.5 Flash'),
   gemini20Flash('gemini-2.0-flash', 'Gemini 2.0 Flash'),
@@ -42,7 +41,6 @@ enum Model {
 
   /// Returns a set of Gemini models.
   static Set<Model> get geminiModels => {
-    Model.gemini10Pro,
     Model.gemini15Pro,
     Model.gemini15Flash,
     Model.gemini20Flash,
@@ -128,7 +126,7 @@ class TranslateOptions {
         yamlResults.model ??
         (modelProvider == ModelProvider.openAi
             ? Model.gpt35Turbo
-            : Model.gemini10Pro);
+            : Model.gemini20Flash);
     final customModel = argResults.customModel ?? yamlResults.customModel;
 
     if (modelProvider != ModelProvider.customOpenAiCompatible) {

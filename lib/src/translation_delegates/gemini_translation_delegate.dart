@@ -18,7 +18,6 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     required super.relaxSyntax,
   }) : _model = GenerativeModel(
          model: switch (model) {
-           Model.gemini10Pro => Model.gemini10Pro.key,
            Model.gemini15Pro || Model.gemini15Flash => '${model.key}-latest',
            Model.gemini20Flash => Model.gemini20Flash.key,
            Model.gemini20FlashLite => Model.gemini20FlashLite.key,
@@ -39,9 +38,8 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     required super.relaxSyntax,
   }) : _model = GenerativeModel(
          model: switch (model) {
-           Model.gemini10Pro => Model.gemini10Pro.key,
-           Model.gemini15Pro ||
-           Model.gemini15Flash => '${model.key}-preview-0514',
+           Model.gemini15Pro => model.key,
+           Model.gemini15Flash => model.key,
            _ => throw ArgumentError.value(model),
          },
          apiKey: apiKey,
