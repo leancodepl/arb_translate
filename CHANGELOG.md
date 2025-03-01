@@ -1,3 +1,6 @@
+## 1.2.0
+- Added Gemini-2.0-flash, Gemini-2.0-flash-lite and gpt4o-mini Support
+
 ## 1.1.0
 - Add custom model support
 

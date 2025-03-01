@@ -9,10 +9,7 @@ enum ModelProvider {
   gemini('gemini', 'Gemini'),
   vertexAi('vertex-ai', 'Vertex AI'),
   openAi('open-ai', 'Open AI'),
-  customOpenAiCompatible(
-    'custom',
-    'Custom Open AI compatible',
-  );
+  customOpenAiCompatible('custom', 'Custom Open AI compatible');
 
   const ModelProvider(this.key, this.name);
 
@@ -25,34 +22,40 @@ enum Model {
   gemini10Pro('gemini-1.0-pro', 'Gemini 1.0 Pro'),
   gemini15Pro('gemini-1.5-pro', 'Gemini 1.5 Pro'),
   gemini15Flash('gemini-1.5-flash', 'Gemini 1.5 Flash'),
+  gemini20Flash('gemini-2.0-flash', 'Gemini 2.0 Flash'),
+  gemini20FlashLite('gemini-2.0-flash-lite', 'Gemini 2.0 Flash-Lite'),
   gpt35Turbo('gpt-3.5-turbo', 'GPT-3.5 Turbo'),
   gpt4('gpt-4', 'GPT-4'),
   gpt4Turbo('gpt-4-turbo', 'GPT-4 Turbo'),
-  gpt4O('gpt-4o', 'GPT-4o');
+  gpt4O('gpt-4o', 'GPT-4o'),
+  gpt4OMini('gpt-4o-mini', 'GPT-4o mini');
 
   const Model(this.key, this.name);
 
   final String key;
   final String name;
 
-  List<ModelProvider> get providers => geminiModels.contains(this)
-      ? [ModelProvider.gemini, ModelProvider.vertexAi]
-      : [ModelProvider.openAi];
+  List<ModelProvider> get providers =>
+      geminiModels.contains(this)
+          ? [ModelProvider.gemini, ModelProvider.vertexAi]
+          : [ModelProvider.openAi];
 
   /// Returns a set of Gemini models.
   static Set<Model> get geminiModels => {
-        Model.gemini10Pro,
-        Model.gemini15Pro,
-        Model.gemini15Flash,
-      };
+    Model.gemini10Pro,
+    Model.gemini15Pro,
+    Model.gemini15Flash,
+    Model.gemini20Flash,
+    Model.gemini20FlashLite,
+  };
 
   /// Returns a set of GPT models.
   static Set<Model> get gptModels => {
-        Model.gpt35Turbo,
-        Model.gpt4,
-        Model.gpt4Turbo,
-        Model.gpt4O,
-      };
+    Model.gpt35Turbo,
+    Model.gpt4,
+    Model.gpt4Turbo,
+    Model.gpt4O,
+  };
 }
 
 /// Class representing the options for translation.
@@ -72,10 +75,10 @@ class TranslateOptions {
     required this.batchSize,
     required bool? useEscaping,
     required bool? relaxSyntax,
-  })  : disableSafety = disableSafety ?? false,
-        templateArbFile = templateArbFile ?? 'app_en.arb',
-        useEscaping = useEscaping ?? false,
-        relaxSyntax = relaxSyntax ?? false;
+  }) : disableSafety = disableSafety ?? false,
+       templateArbFile = templateArbFile ?? 'app_en.arb',
+       useEscaping = useEscaping ?? false,
+       relaxSyntax = relaxSyntax ?? false;
 
   static const arbDirKey = 'arb-dir';
   static const templateArbFileKey = 'template-arb-file';
@@ -106,7 +109,8 @@ class TranslateOptions {
     TranslateArgResults argResults,
     TranslateYamlResults yamlResults,
   ) {
-    final apiKey = argResults.apiKey ??
+    final apiKey =
+        argResults.apiKey ??
         yamlResults.apiKey ??
         Platform.environment['ARB_TRANSLATE_API_KEY'];
 
@@ -114,11 +118,13 @@ class TranslateOptions {
       throw MissingApiKeyException();
     }
 
-    final modelProvider = argResults.modelProvider ??
+    final modelProvider =
+        argResults.modelProvider ??
         yamlResults.modelProvider ??
         ModelProvider.gemini;
 
-    final model = argResults.model ??
+    final model =
+        argResults.model ??
         yamlResults.model ??
         (modelProvider == ModelProvider.openAi
             ? Model.gpt35Turbo
@@ -142,9 +148,10 @@ class TranslateOptions {
 
     final vertexAiProjectUrlString =
         argResults.vertexAiProjectUrl ?? yamlResults.vertexAiProjectUrl;
-    final Uri? vertexAiProjectUrl = vertexAiProjectUrlString != null
-        ? Uri.tryParse(vertexAiProjectUrlString)
-        : null;
+    final Uri? vertexAiProjectUrl =
+        vertexAiProjectUrlString != null
+            ? Uri.tryParse(vertexAiProjectUrlString)
+            : null;
 
     if (modelProvider == ModelProvider.vertexAi) {
       if (vertexAiProjectUrlString == null) {
@@ -160,7 +167,7 @@ class TranslateOptions {
 
     final customModelProviderBaseUrlString =
         argResults.customModelProviderBaseUrl ??
-            yamlResults.customModelProviderBaseUrl;
+        yamlResults.customModelProviderBaseUrl;
     final Uri? customModelProviderBaseUrl =
         customModelProviderBaseUrlString != null
             ? Uri.tryParse(customModelProviderBaseUrlString)
@@ -191,7 +198,8 @@ class TranslateOptions {
       vertexAiProjectUrl: vertexAiProjectUrl,
       disableSafety: argResults.disableSafety ?? yamlResults.disableSafety,
       context: context,
-      arbDir: argResults.arbDir ??
+      arbDir:
+          argResults.arbDir ??
           yamlResults.arbDir ??
           fileSystem.path.join('lib', 'l10n'),
       templateArbFile:

@@ -17,14 +17,16 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     required super.useEscaping,
     required super.relaxSyntax,
   }) : _model = GenerativeModel(
-          model: switch (model) {
-            Model.gemini10Pro => Model.gemini10Pro.key,
-            Model.gemini15Pro || Model.gemini15Flash => '${model.key}-latest',
-            _ => throw ArgumentError.value(model),
-          },
-          apiKey: apiKey,
-          safetySettings: disableSafety ? _disabledSafetySettings : [],
-        );
+         model: switch (model) {
+           Model.gemini10Pro => Model.gemini10Pro.key,
+           Model.gemini15Pro || Model.gemini15Flash => '${model.key}-latest',
+           Model.gemini20Flash => Model.gemini20Flash.key,
+           Model.gemini20FlashLite => Model.gemini20FlashLite.key,
+           _ => throw ArgumentError.value(model),
+         },
+         apiKey: apiKey,
+         safetySettings: disableSafety ? _disabledSafetySettings : [],
+       );
 
   GeminiTranslationDelegate.vertexAi({
     required Model model,
@@ -36,17 +38,16 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     required super.useEscaping,
     required super.relaxSyntax,
   }) : _model = GenerativeModel(
-          model: switch (model) {
-            Model.gemini10Pro => Model.gemini10Pro.key,
-            Model.gemini15Pro ||
-            Model.gemini15Flash =>
-              '${model.key}-preview-0514',
-            _ => throw ArgumentError.value(model),
-          },
-          apiKey: apiKey,
-          safetySettings: disableSafety ? _disabledSafetySettings : [],
-          httpClient: VertexHttpClient(projectUrl.toString()),
-        );
+         model: switch (model) {
+           Model.gemini10Pro => Model.gemini10Pro.key,
+           Model.gemini15Pro ||
+           Model.gemini15Flash => '${model.key}-preview-0514',
+           _ => throw ArgumentError.value(model),
+         },
+         apiKey: apiKey,
+         safetySettings: disableSafety ? _disabledSafetySettings : [],
+         httpClient: VertexHttpClient(projectUrl.toString()),
+       );
 
   @override
   int get maxRetryCount => 5;
@@ -55,14 +56,15 @@ class GeminiTranslationDelegate extends TranslationDelegate {
   @override
   Duration get queryBackoff => Duration(seconds: 5);
 
-  static final _disabledSafetySettings = [
-    HarmCategory.harassment,
-    HarmCategory.hateSpeech,
-    HarmCategory.sexuallyExplicit,
-    HarmCategory.dangerousContent,
-  ]
-      .map((category) => SafetySetting(category, HarmBlockThreshold.none))
-      .toList();
+  static final _disabledSafetySettings =
+      [
+            HarmCategory.harassment,
+            HarmCategory.hateSpeech,
+            HarmCategory.sexuallyExplicit,
+            HarmCategory.dangerousContent,
+          ]
+          .map((category) => SafetySetting(category, HarmBlockThreshold.none))
+          .toList();
 
   final GenerativeModel _model;
 
@@ -98,8 +100,9 @@ class GeminiTranslationDelegate extends TranslationDelegate {
     } on InvalidApiKey catch (_) {
       throw InvalidApiKeyException();
     } on ServerException catch (e) {
-      if (e.message
-          .startsWith('Request had invalid authentication credentials.')) {
+      if (e.message.startsWith(
+        'Request had invalid authentication credentials.',
+      )) {
         throw InvalidApiKeyException();
       } else if (e.message.startsWith('Quota exceeded') ||
           e.message.startsWith('Resource has been exhausted')) {
@@ -135,9 +138,9 @@ class VertexHttpClient extends BaseClient {
     Object? body,
     Encoding? encoding,
   }) async {
-    if (!url
-        .toString()
-        .contains('https://generativelanguage.googleapis.com/v1beta/models')) {
+    if (!url.toString().contains(
+      'https://generativelanguage.googleapis.com/v1beta/models',
+    )) {
       return _client.post(
         url,
         headers: headers,
@@ -147,14 +150,18 @@ class VertexHttpClient extends BaseClient {
     }
 
     final response = await _client.post(
-      Uri.parse(url.toString().replaceAll(
+      Uri.parse(
+        url.toString().replaceAll(
           'https://generativelanguage.googleapis.com/v1beta/models',
-          _projectUrl)),
+          _projectUrl,
+        ),
+      ),
       headers: {
         ...Map.fromEntries(
-            headers?.entries.where((entry) => entry.key != 'x-goog-api-key') ??
-                []),
-        'Authorization': 'Bearer ${headers?['x-goog-api-key']}'
+          headers?.entries.where((entry) => entry.key != 'x-goog-api-key') ??
+              [],
+        ),
+        'Authorization': 'Bearer ${headers?['x-goog-api-key']}',
       },
       body: body,
       encoding: encoding,
