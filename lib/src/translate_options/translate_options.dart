@@ -53,6 +53,7 @@ enum Model {
     Model.gpt4,
     Model.gpt4Turbo,
     Model.gpt4O,
+    Model.gpt4OMini,
   };
 }
 
