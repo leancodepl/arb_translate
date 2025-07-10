@@ -57,25 +57,20 @@ class ChatGptTranslationDelegate extends TranslationDelegate {
             '"$locale". Add other ICU plural forms according to CLDR rules if '
             'necessary. Return only raw JSON.\n\n'
             '$encodedResources',
-          )
+          ),
         ],
         role: OpenAIChatMessageRole.user,
       ),
     ];
 
     try {
-      final response = (await OpenAI.instance.chat.create(
-        model: _model,
-        responseFormat:
-            _model != Model.gpt4.key ? {"type": "json_object"} : null,
-        messages: prompt,
-      ))
-          .choices
-          .first
-          .message
-          .content!
-          .first
-          .text;
+      final response =
+          (await OpenAI.instance.chat.create(
+            model: _model,
+            responseFormat:
+                _model != Model.gpt4.key ? {"type": "json_object"} : null,
+            messages: prompt,
+          )).choices.first.message.content!.first.text;
 
       if (response == null) {
         throw NoResponseException();

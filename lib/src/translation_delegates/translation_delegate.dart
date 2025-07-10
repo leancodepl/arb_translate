@@ -33,16 +33,14 @@ abstract class TranslationDelegate {
     final results = <String, String>{};
 
     for (var i = 0; i < batches.length; i += maxParallelQueries) {
-      final batchResults = await Future.wait(
-        [
-          for (var j = i; j < i + maxParallelQueries && j < batches.length; j++)
-            _translateBatch(
-              resources: batches[j],
-              locale: locale,
-              batchName: '${j + 1}/${batches.length}',
-            ),
-        ],
-      );
+      final batchResults = await Future.wait([
+        for (var j = i; j < i + maxParallelQueries && j < batches.length; j++)
+          _translateBatch(
+            resources: batches[j],
+            locale: locale,
+            batchName: '${j + 1}/${batches.length}',
+          ),
+      ]);
 
       results.addAll({for (final results in batchResults) ...results});
     }
@@ -163,7 +161,9 @@ abstract class TranslationDelegate {
     }
 
     final trimmedResponse = response.substring(
-        response.indexOf('{'), response.lastIndexOf('}') + 1);
+      response.indexOf('{'),
+      response.lastIndexOf('}') + 1,
+    );
 
     Map<String, Object?> responseJson;
 
@@ -173,8 +173,9 @@ abstract class TranslationDelegate {
       return null;
     }
 
-    final messageResources =
-        resources.keys.where((key) => !key.startsWith('@'));
+    final messageResources = resources.keys.where(
+      (key) => !key.startsWith('@'),
+    );
 
     if (messageResources.any((key) => responseJson[key] is! String)) {
       return null;

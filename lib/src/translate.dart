@@ -17,53 +17,51 @@ import 'package:file/file.dart';
 /// the ARB files.
 /// The [options] parameter contains the translation options, including the
 /// model provider, API key, context, safety settings, and more.
-Future<void> translate(
-  FileSystem fileSystem,
-  TranslateOptions options,
-) async {
+Future<void> translate(FileSystem fileSystem, TranslateOptions options) async {
   final translationDelegate = switch (options.modelProvider) {
     ModelProvider.gemini => GeminiTranslationDelegate(
-        model: options.model,
-        apiKey: options.apiKey,
-        batchSize: options.batchSize,
-        context: options.context,
-        disableSafety: options.disableSafety,
-        useEscaping: options.useEscaping,
-        relaxSyntax: options.relaxSyntax,
-      ),
+      model: options.model,
+      apiKey: options.apiKey,
+      batchSize: options.batchSize,
+      context: options.context,
+      disableSafety: options.disableSafety,
+      useEscaping: options.useEscaping,
+      relaxSyntax: options.relaxSyntax,
+    ),
     ModelProvider.vertexAi => GeminiTranslationDelegate.vertexAi(
-        model: options.model,
-        apiKey: options.apiKey,
-        projectUrl: options.vertexAiProjectUrl!,
-        batchSize: options.batchSize,
-        context: options.context,
-        disableSafety: options.disableSafety,
-        useEscaping: options.useEscaping,
-        relaxSyntax: options.relaxSyntax,
-      ),
+      model: options.model,
+      apiKey: options.apiKey,
+      projectUrl: options.vertexAiProjectUrl!,
+      batchSize: options.batchSize,
+      context: options.context,
+      disableSafety: options.disableSafety,
+      useEscaping: options.useEscaping,
+      relaxSyntax: options.relaxSyntax,
+    ),
     ModelProvider.openAi => ChatGptTranslationDelegate(
-        model: options.model,
-        apiKey: options.apiKey,
-        batchSize: options.batchSize,
-        context: options.context,
-        useEscaping: options.useEscaping,
-        relaxSyntax: options.relaxSyntax,
-      ),
+      model: options.model,
+      apiKey: options.apiKey,
+      batchSize: options.batchSize,
+      context: options.context,
+      useEscaping: options.useEscaping,
+      relaxSyntax: options.relaxSyntax,
+    ),
     ModelProvider.customOpenAiCompatible => ChatGptTranslationDelegate.custom(
-        model: options.customModel!,
-        apiKey: options.apiKey,
-        baseUrl: options.customModelProviderBaseUrl!,
-        batchSize: options.batchSize,
-        context: options.context,
-        useEscaping: options.useEscaping,
-        relaxSyntax: options.relaxSyntax,
-      ),
+      model: options.customModel!,
+      apiKey: options.apiKey,
+      baseUrl: options.customModelProviderBaseUrl!,
+      batchSize: options.batchSize,
+      context: options.context,
+      useEscaping: options.useEscaping,
+      relaxSyntax: options.relaxSyntax,
+    ),
   };
 
   final bundles =
       AppResourceBundleCollection(fileSystem.directory(options.arbDir)).bundles;
   final templateBundle = bundles.firstWhere(
-      (bundle) => bundle.file.path.endsWith(options.templateArbFile));
+    (bundle) => bundle.file.path.endsWith(options.templateArbFile),
+  );
 
   for (final bundle in bundles.where((bundle) => bundle != templateBundle)) {
     if (options.excludeLocales?.contains(bundle.locale.toString()) ?? false) {
@@ -85,8 +83,10 @@ Future<void> _translateBundle({
   required AppResourceBundle templateBundle,
   required AppResourceBundle bundle,
 }) async {
-  final untranslatedResourceIds =
-      findUntranslatedResourceIds(bundle, templateBundle);
+  final untranslatedResourceIds = findUntranslatedResourceIds(
+    bundle,
+    templateBundle,
+  );
 
   if (untranslatedResourceIds.isEmpty) {
     print('No terms to translate for locale ${bundle.locale}');

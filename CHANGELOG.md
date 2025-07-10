@@ -1,3 +1,14 @@
+## 1.3.0
+- Added Gemini-2.5-pro, Gemini-2.5-flash (new default for Gemini), and Gemini-2.5-flash-lite Support
+- Updated default Gemini model from Gemini-2.0-flash to Gemini-2.5-flash
+- Updated README.md
+
+## 1.2.0
+- Added Gemini-2.0-flash (new default for Gemini), Gemini-2.0-flash-lite and gpt4o-mini Support
+- Deprecated Gemini-1.0-pro
+- Updated README.md
+- Bump dart sdk version to require 3.7 and updated packages
+
 ## 1.1.0
 - Add custom model support
 

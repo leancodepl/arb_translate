@@ -9,7 +9,8 @@ class InvalidApiKeyException implements TranslateException {
 
 class UnsupportedUserLocationException implements TranslateException {
   @override
-  String get message => 'Gemini API is not available in your location. Use '
+  String get message =>
+      'Gemini API is not available in your location. Use '
       'Vertex AI model provider. See the documentation for more information';
 }
 
