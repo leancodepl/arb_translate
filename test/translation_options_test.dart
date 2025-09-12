@@ -9,14 +9,12 @@ void main() {
       test(
         'resolve returns options with values from argResults over yamlResults',
         () {
-          const argResultsModelProvider = ModelProvider.vertexAi;
+          const argResultsModelProvider = ModelProvider.gemini;
           const argResultsCustomModelProviderUrl =
               'http://argResultsCustomModelProviderBaseUrl';
-          const argResultsModel = Model.gemini10Pro;
+          const argResultsModel = Model.gemini20Flash;
           const argResultsCustomModel = 'argResultsCustomModel';
           const argResultsApiKey = 'argResultsApiKey';
-          const argResultsVertexAiProjectUrl =
-              'https://argResultsVertexAiProjectUrl/models';
           const argResultsDisableSafety = true;
           const argResultsContext = 'argResultsContext';
           const argResultsExcludeLocales = ['pl'];
@@ -33,7 +31,6 @@ void main() {
             model: argResultsModel,
             customModel: argResultsCustomModel,
             apiKey: argResultsApiKey,
-            vertexAiProjectUrl: argResultsVertexAiProjectUrl,
             disableSafety: argResultsDisableSafety,
             context: argResultsContext,
             excludeLocales: argResultsExcludeLocales,
@@ -47,10 +44,9 @@ void main() {
             modelProvider: ModelProvider.gemini,
             customModelProviderBaseUrl:
                 'http://yamlResultsCustomModelProviderBaseUrl',
-            model: Model.gpt35Turbo,
+            model: Model.gpt4Turbo,
             customModel: 'yamlResultsCustomModel',
             apiKey: 'yamlResultsApiKey',
-            vertexAiProjectUrl: 'https://yamlResultsVertexAiProjectUrl/models',
             disableSafety: !argResultsDisableSafety,
             context: 'yamlResultsContext',
             excludeLocales: ['en'],
@@ -94,11 +90,6 @@ void main() {
                   (options) => options.apiKey,
                   'apiKey',
                   argResultsApiKey,
-                )
-                .having(
-                  (options) => options.vertexAiProjectUrl,
-                  'vertexAiProjectUrl',
-                  Uri.parse(argResultsVertexAiProjectUrl),
                 )
                 .having(
                   (options) => options.disableSafety,

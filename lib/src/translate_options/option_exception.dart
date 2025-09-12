@@ -31,15 +31,6 @@ class MissingCustomModelException implements OptionException {
       'arb-translate-custom-model property in l10n.yaml file';
 }
 
-/// Exception thrown when a Vertex AI project URL is missing.
-class MissingVertexAiProjectUrlException implements OptionException {
-  @override
-  String get message =>
-      'Using Vertex AI model provider requires a project URL. Provide the URL '
-      'using vertex-ai-project-url argument in command line or using '
-      'arb-translate-vertex-ai-project-url property in l10n.yaml file';
-}
-
 /// Exception thrown when a custom model provider base URL is missing.
 class MissingCustomModelProviderBaseUrlException implements OptionException {
   @override
@@ -54,15 +45,6 @@ class MissingCustomModelProviderBaseUrlException implements OptionException {
 class InvalidCustomModelProviderBaseUrlException implements OptionException {
   @override
   String get message => 'Invalid custom model provider base URL.';
-}
-
-/// Exception thrown when an invalid Vertex AI project URL is provided.
-class InvalidVertexAiProjectUrlException implements OptionException {
-  @override
-  String get message =>
-      'Invalid Vertex AI project URL. The URL should be a valid HTTPS URL and '
-      'should end with "models" eg. "https://{api-endpoint}/v1/projects/'
-      '{project-id}/locations/{location-id}/publishers/google/models"';
 }
 
 /// Exception thrown when the translation context is too long.

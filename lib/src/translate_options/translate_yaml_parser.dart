@@ -10,7 +10,6 @@ class TranslateYamlResults {
     required this.model,
     required this.customModel,
     required this.apiKey,
-    required this.vertexAiProjectUrl,
     required this.disableSafety,
     required this.context,
     required this.excludeLocales,
@@ -28,7 +27,6 @@ class TranslateYamlResults {
         model = null,
         customModel = null,
         apiKey = null,
-        vertexAiProjectUrl = null,
         disableSafety = null,
         context = null,
         excludeLocales = null,
@@ -49,9 +47,6 @@ class TranslateYamlResults {
 
   /// The API key for translation.
   final String? apiKey;
-
-  /// The URL of the Vertex AI project.
-  final String? vertexAiProjectUrl;
 
   /// The custom model provider base URL for translation.
   final String? customModelProviderBaseUrl;
@@ -88,7 +83,6 @@ class TranslateYamlParser {
   static const _modelKey = 'arb-translate-model';
   static const _customModelKey = 'arb-translate-custom-model';
   static const _apiKeyKey = 'arb-translate-api-key';
-  static const _vertexAiProjectUrlKey = 'arb-translate-vertex-ai-project-url';
   static const _customModelProviderBaseUrlKey =
       'arb-translate-custom-model-provider-base-url';
   static const _disableSafetyKey = 'arb-translate-disable-safety';
@@ -124,8 +118,6 @@ class TranslateYamlParser {
       model: _tryReadModel(yamlNode, _modelKey),
       customModel: _tryReadString(yamlNode, _customModelKey),
       arbDir: _tryReadUri(yamlNode, TranslateOptions.arbDirKey)?.path,
-      vertexAiProjectUrl:
-          _tryReadUri(yamlNode, _vertexAiProjectUrlKey).toString(),
       customModelProviderBaseUrl:
           _tryReadUri(yamlNode, _customModelProviderBaseUrlKey).toString(),
       disableSafety: _tryReadBool(yamlNode, _disableSafetyKey),

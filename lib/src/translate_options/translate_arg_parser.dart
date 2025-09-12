@@ -13,7 +13,6 @@ class TranslateArgResults {
     required this.model,
     required this.customModel,
     required this.apiKey,
-    required this.vertexAiProjectUrl,
     required this.customModelProviderBaseUrl,
     required this.disableSafety,
     required this.batchSize,
@@ -39,9 +38,6 @@ class TranslateArgResults {
 
   /// The API key for translation.
   final String? apiKey;
-
-  /// The URL of the Vertex AI project.
-  final String? vertexAiProjectUrl;
 
   /// The custom model provider base URL for translation.
   final String? customModelProviderBaseUrl;
@@ -80,7 +76,6 @@ class TranslateArgParser {
   static const _modelKey = 'model';
   static const _customModelKey = 'custom-model';
   static const _apiKeyKey = 'api-key';
-  static const _vertexAiProjectUrlKey = 'vertex-ai-project-url';
   static const _customModelProviderBaseUrlKey =
       'custom-model-provider-base-url';
   static const _disableSafetyKey = 'disable-safety';
@@ -109,7 +104,7 @@ class TranslateArgParser {
       _modelKey,
       help: 'The model to use for translation.',
       allowed: Model.values.map((model) => model.key),
-      defaultsTo: Model.gemini10Pro.key,
+      defaultsTo: Model.gemini20Flash.key,
       allowedHelp: {
         for (final model in Model.values)
           model.key:
@@ -124,10 +119,6 @@ class TranslateArgParser {
     ..addOption(
       _apiKeyKey,
       help: 'API key used to make translation requests.',
-    )
-    ..addOption(
-      _vertexAiProjectUrlKey,
-      help: 'The URL of the Vertex AI project to use for translation.',
     )
     ..addOption(
       _customModelProviderBaseUrlKey,
@@ -221,7 +212,6 @@ class TranslateArgParser {
       model: model,
       customModel: rawResults[_customModelKey] as String?,
       apiKey: rawResults[_apiKeyKey] as String?,
-      vertexAiProjectUrl: rawResults[_vertexAiProjectUrlKey] as String?,
       customModelProviderBaseUrl:
           rawResults[_customModelProviderBaseUrlKey] as String?,
       disableSafety: _getBoolIfParsed(rawResults, _disableSafetyKey),

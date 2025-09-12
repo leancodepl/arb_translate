@@ -1,3 +1,7 @@
+## 2.0.0
+- Remove support for Vertex AI
+- Update model selection
+
 ## 1.1.0
 - Add custom model support
 

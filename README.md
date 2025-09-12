@@ -31,7 +31,7 @@ steps:
    argument `--model-provider: open-ai`
 
 4. (Optional) Select model used for translation. To do it add
-   `arb-translate-model` to `l10n.yaml` or use command argument `--model`. The available options are `[gemini-1.0-pro (default for Gemini), gemini-1.5-pro, gemini-1.5-flash, gpt-3.5-turbo (default for OpenAI), gpt-4, gpt-4-turbo, gpt-4o]`
+   `arb-translate-model` to `l10n.yaml` or use command argument `--model`. The available options are `[gemini-2.0-flash (default for Gemini), gemini-2.5-pro, gemini-2.5-flash, gemini-2.5-flash-lite, gpt-4-turbo (default for OpenAI), gpt-4, gpt-4o,gpt-5,gpt-5-mini,gpt-5-nano]`
 
 5. (Optional) Add context of your application
    `arb-translate-context: {your-app-context}` eg. "sporting goods store app"
@@ -52,27 +52,6 @@ to provide:
    for translation
 
 See `arb_translate --help` for more information.
-
-### Vertex AI configuration
-You can use `arb_translate` with Vertex AI service from Google Cloud Platform
-but configuration is a bit longer:
-
-1. Create your GCP project and enable Vertex AI by following
-   https://cloud.google.com/vertex-ai/docs/generative-ai/start/quickstarts/api-quickstart
-2. Generate your API token using gcloud CLI
-   ```console
-   $ gcloud auth print-access-token
-   ```
-3. Save your API token in the environment variable `ARB_TRANSLATE_API_KEY` or
-   add `arb-translate-api-key: {your-api-key}` to `l10n.yaml` or specify as
-   command argument `--api-key {your-api-key}`
-4. Add `arb-translate-model-provider: vertex-ai` to `l10n.yaml` or specify as
-   command argument `--model-provider: vertex-ai`
-5. Add `arb-translate-vertex-ai-project-url: {your-project-url}` to `l10n.yaml`
-   or specify as command argument `--vertex-ai-project-url {your-project-url}`.
-   Project url should look like this
-   `https://{region}-aiplatform.googleapis.com/v1/projects/{your-project-id}/locations/{region}/publishers/google/models`
-
 
 ### Custom model configuration
 You can use `arb_translate` with any model with an OpenAI-compatible API. To configure a custom model:
