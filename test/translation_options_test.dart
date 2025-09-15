@@ -12,7 +12,7 @@ void main() {
           const argResultsModelProvider = ModelProvider.gemini;
           const argResultsCustomModelProviderUrl =
               'http://argResultsCustomModelProviderBaseUrl';
-          const argResultsModel = Model.gemini20Flash;
+          const argResultsModel = Model.gemini25Flash;
           const argResultsCustomModel = 'argResultsCustomModel';
           const argResultsApiKey = 'argResultsApiKey';
           const argResultsDisableSafety = true;
@@ -44,7 +44,7 @@ void main() {
             modelProvider: ModelProvider.gemini,
             customModelProviderBaseUrl:
                 'http://yamlResultsCustomModelProviderBaseUrl',
-            model: Model.gpt4Turbo,
+            model: Model.gpt5Mini,
             customModel: 'yamlResultsCustomModel',
             apiKey: 'yamlResultsApiKey',
             disableSafety: !argResultsDisableSafety,

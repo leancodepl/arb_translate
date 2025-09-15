@@ -104,7 +104,7 @@ class TranslateArgParser {
       _modelKey,
       help: 'The model to use for translation.',
       allowed: Model.values.map((model) => model.key),
-      defaultsTo: Model.gemini20Flash.key,
+      defaultsTo: Model.gemini25Flash.key,
       allowedHelp: {
         for (final model in Model.values)
           model.key:

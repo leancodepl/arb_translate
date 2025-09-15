@@ -25,6 +25,9 @@ enum Model {
   gemini25Flash('gemini-2.5-flash', 'Gemini 2.5 Flash'),
   gemini25FlashLite('gemini-2.5-flash-lite', 'Gemini 2.5 Flash Lite'),
   gemini20Flash('gemini-2.0-flash', 'Gemini 2.0 Flash'),
+  gemini15Flash('gemini-1.5-flash', 'Gemini 1.5 Flash'),
+  gemini15Pro('gemini-1.5-pro', 'Gemini 1.5 Pro'),
+  gpt35Turbo('gpt-3.5-turbo', 'GPT-3.5 Turbo'),
   gpt4('gpt-4', 'GPT-4'),
   gpt4Turbo('gpt-4-turbo', 'GPT-4 Turbo'),
   gpt4O('gpt-4o', 'GPT-4o'),
@@ -48,10 +51,13 @@ enum Model {
         Model.gemini25Flash,
         Model.gemini25FlashLite,
         Model.gemini20Flash,
+        Model.gemini15Flash,
+        Model.gemini15Pro,
       };
 
   /// Returns a set of GPT models.
   static Set<Model> get gptModels => {
+        Model.gpt35Turbo,
         Model.gpt4,
         Model.gpt4Turbo,
         Model.gpt4O,
