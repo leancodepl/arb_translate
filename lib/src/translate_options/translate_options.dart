@@ -129,6 +129,16 @@ class TranslateOptions {
     final model = argResults.model ?? yamlResults.model ?? Model.gemini25Flash;
     final customModel = argResults.customModel ?? yamlResults.customModel;
 
+    if (modelProvider == ModelProvider.customOpenAiCompatible) {
+      if (customModel == null) {
+        throw MissingCustomModelException();
+      }
+    } else {
+      if (model.provider != modelProvider) {
+        throw ModelProviderMismatchException();
+      }
+    }
+
     final customModelProviderBaseUrlString =
         argResults.customModelProviderBaseUrl ??
             yamlResults.customModelProviderBaseUrl;
@@ -144,10 +154,6 @@ class TranslateOptions {
 
       if (customModelProviderBaseUrl == null) {
         throw InvalidCustomModelProviderBaseUrlException();
-      }
-    } else {
-      if (model.provider != modelProvider) {
-        throw ModelProviderMismatchException();
       }
     }
 
