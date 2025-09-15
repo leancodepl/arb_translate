@@ -34,8 +34,7 @@ enum Model {
   gpt4O('gpt-4o', 'GPT-4o', ModelProvider.openAi),
   gpt5('gpt-5', 'GPT-5', ModelProvider.openAi),
   gpt5Mini('gpt-5-mini', 'GPT-5 Mini', ModelProvider.openAi),
-  gpt5Nano('gpt-5-nano', 'GPT-5 Nano', ModelProvider.openAi),
-  ;
+  gpt5Nano('gpt-5-nano', 'GPT-5 Nano', ModelProvider.openAi);
 
   const Model(this.key, this.name, this.provider);
 
