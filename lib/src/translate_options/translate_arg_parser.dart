@@ -9,7 +9,6 @@ import 'package:collection/collection.dart';
 class TranslateArgResults {
   const TranslateArgResults({
     required this.help,
-    required this.modelProvider,
     required this.model,
     required this.customModel,
     required this.apiKey,
@@ -26,9 +25,6 @@ class TranslateArgResults {
 
   /// Indicates whether the help option was specified.
   final bool? help;
-
-  /// The model provider for translation.
-  final ModelProvider? modelProvider;
 
   /// The model for translation.
   final Model? model;
@@ -184,11 +180,6 @@ class TranslateArgParser {
           )
         : null;
 
-    final customModel = rawResults[_customModelKey] as String?;
-
-    final modelProvider = model?.provider ??
-        (customModel != null ? ModelProvider.customOpenAiCompatible : null);
-
     final excludeLocales = rawResults.wasParsed(_excludeLocalesKey)
         ? rawResults[_excludeLocalesKey] as List<String>
         : null;
@@ -199,9 +190,8 @@ class TranslateArgParser {
 
     return TranslateArgResults(
       help: _getBoolIfParsed(rawResults, _helpKey),
-      modelProvider: modelProvider,
       model: model,
-      customModel: customModel,
+      customModel: rawResults[_customModelKey] as String?,
       apiKey: rawResults[_apiKeyKey] as String?,
       customModelProviderBaseUrl:
           rawResults[_customModelProviderBaseUrlKey] as String?,

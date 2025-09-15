@@ -44,25 +44,14 @@ enum Model {
   final ModelProvider provider;
 
   /// Returns a set of Gemini models.
-  static Set<Model> get geminiModels => {
-        Model.gemini25Pro,
-        Model.gemini25Flash,
-        Model.gemini25FlashLite,
-        Model.gemini20Flash,
-        Model.gemini15Flash,
-        Model.gemini15Pro,
-      };
+  static Set<Model> get geminiModels => Model.values
+      .where((model) => model.provider == ModelProvider.gemini)
+      .toSet();
 
   /// Returns a set of GPT models.
-  static Set<Model> get gptModels => {
-        Model.gpt35Turbo,
-        Model.gpt4,
-        Model.gpt4Turbo,
-        Model.gpt4O,
-        Model.gpt5,
-        Model.gpt5Mini,
-        Model.gpt5Nano,
-      };
+  static Set<Model> get gptModels => Model.values
+      .where((model) => model.provider == ModelProvider.openAi)
+      .toSet();
 }
 
 /// Class representing the options for translation.
@@ -122,12 +111,14 @@ class TranslateOptions {
       throw MissingApiKeyException();
     }
 
-    final modelProvider = argResults.modelProvider ??
-        yamlResults.modelProvider ??
-        ModelProvider.gemini;
-
-    final model = argResults.model ?? yamlResults.model ?? Model.gemini25Flash;
+    final specifiedModel = argResults.model ?? yamlResults.model;
+    final model = specifiedModel ?? Model.gemini25Flash;
     final customModel = argResults.customModel ?? yamlResults.customModel;
+
+    final modelProvider = specifiedModel?.provider ??
+        (customModel != null
+            ? ModelProvider.customOpenAiCompatible
+            : ModelProvider.gemini);
 
     if (modelProvider == ModelProvider.customOpenAiCompatible) {
       if (customModel == null) {

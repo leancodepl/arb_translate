@@ -26,7 +26,6 @@ void main() {
 
           final argResults = TranslateArgResults(
             help: false,
-            modelProvider: argResultsModelProvider,
             customModelProviderBaseUrl: argResultsCustomModelProviderUrl,
             model: argResultsModel,
             customModel: argResultsCustomModel,
@@ -41,7 +40,6 @@ void main() {
             relaxSyntax: argResultsRelaxSyntax,
           );
           final yamlResults = TranslateYamlResults(
-            modelProvider: ModelProvider.gemini,
             customModelProviderBaseUrl:
                 'http://yamlResultsCustomModelProviderBaseUrl',
             model: Model.gpt5Mini,

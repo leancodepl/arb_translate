@@ -5,7 +5,6 @@ import 'package:yaml/yaml.dart';
 /// Represents the results of parsing a YAML file for translation options.
 class TranslateYamlResults {
   const TranslateYamlResults({
-    required this.modelProvider,
     required this.customModelProviderBaseUrl,
     required this.model,
     required this.customModel,
@@ -22,8 +21,7 @@ class TranslateYamlResults {
 
   /// Creates an empty instance of [TranslateYamlResults].
   const TranslateYamlResults.empty()
-      : modelProvider = null,
-        customModelProviderBaseUrl = null,
+      : customModelProviderBaseUrl = null,
         model = null,
         customModel = null,
         apiKey = null,
@@ -35,9 +33,6 @@ class TranslateYamlResults {
         templateArbFile = null,
         useEscaping = null,
         relaxSyntax = null;
-
-  /// The model provider for translation.
-  final ModelProvider? modelProvider;
 
   /// The model for translation.
   final Model? model;
@@ -115,11 +110,7 @@ class TranslateYamlParser {
     final model = _tryReadModel(yamlNode, _modelKey);
     final customModel = _tryReadString(yamlNode, _customModelKey);
 
-    final modelProvider = model?.provider ??
-        (customModel != null ? ModelProvider.customOpenAiCompatible : null);
-
     return TranslateYamlResults(
-      modelProvider: modelProvider,
       model: model,
       customModel: customModel,
       arbDir: _tryReadUri(yamlNode, TranslateOptions.arbDirKey)?.path,
