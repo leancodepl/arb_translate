@@ -71,7 +71,6 @@ class TranslateArgResults {
 /// A class that parses command-line arguments for translation options.
 class TranslateArgParser {
   static const _helpKey = 'help';
-  static const _modelProviderKey = 'model-provider';
 
   static const _modelKey = 'model';
   static const _customModelKey = 'custom-model';
@@ -92,23 +91,13 @@ class TranslateArgParser {
       negatable: false,
     )
     ..addOption(
-      _modelProviderKey,
-      help: 'The model provider to use for translation.',
-      allowed: ModelProvider.values.map((provider) => provider.key),
-      defaultsTo: ModelProvider.gemini.key,
-      allowedHelp: {
-        for (final model in Model.values) model.key: model.name,
-      },
-    )
-    ..addOption(
       _modelKey,
       help: 'The model to use for translation.',
       allowed: Model.values.map((model) => model.key),
       defaultsTo: Model.gemini25Flash.key,
       allowedHelp: {
         for (final model in Model.values)
-          model.key:
-              '${model.name} (${model.providers.map((provider) => provider.name).join(', ')})',
+          model.key: '${model.name} (${model.provider.name})',
       },
     )
     ..addOption(
@@ -189,19 +178,21 @@ class TranslateArgParser {
       );
     }
 
-    final modelProvider = rawResults.wasParsed(_modelProviderKey)
-        ? ModelProvider.values.firstWhereOrNull(
-            (provider) => provider.key == rawResults[_modelProviderKey],
-          )
-        : null;
     final model = rawResults.wasParsed(_modelKey)
         ? Model.values.firstWhereOrNull(
             (model) => model.key == rawResults[_modelKey],
           )
         : null;
+
+    final customModel = rawResults[_customModelKey] as String?;
+
+    final modelProvider = model?.provider ??
+        (customModel != null ? ModelProvider.customOpenAiCompatible : null);
+
     final excludeLocales = rawResults.wasParsed(_excludeLocalesKey)
         ? rawResults[_excludeLocalesKey] as List<String>
         : null;
+
     final batchSize = rawResults.wasParsed(_batchSizeKey)
         ? int.parse(rawResults[_batchSizeKey] as String)
         : null;
@@ -210,7 +201,7 @@ class TranslateArgParser {
       help: _getBoolIfParsed(rawResults, _helpKey),
       modelProvider: modelProvider,
       model: model,
-      customModel: rawResults[_customModelKey] as String?,
+      customModel: customModel,
       apiKey: rawResults[_apiKeyKey] as String?,
       customModelProviderBaseUrl:
           rawResults[_customModelProviderBaseUrlKey] as String?,

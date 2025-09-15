@@ -26,15 +26,11 @@ steps:
 2. Save your API token in the environment variable `ARB_TRANSLATE_API_KEY` or
    add `arb-translate-api-key: {your-api-key}` to `l10n.yaml` in your project.
 
-3. If you are using ChatGPT select OpenAI as model provider. To do it add
-   `arb-translate-model-provider: open-ai` to `l10n.yaml` or use command
-   argument `--model-provider: open-ai`
+3. (Optional) Select model used for translation. To do it add
+   `arb-translate-model` to `l10n.yaml` or use command argument `--model`. The default model is
+   gemini-2.5-flash. For all available models see `arb_translate --help`.
 
-4. (Optional) Select model used for translation. To do it add
-   `arb-translate-model` to `l10n.yaml` or use command argument `--model`. The default models are 
-   gemini-2.5-flash and gpt-5-mini. For all available models see arb_translate --help. 
-
-5. (Optional) Add context of your application
+4. (Optional) Add context of your application
    `arb-translate-context: {your-app-context}` eg. "sporting goods store app"
 
 All other required parameters match `flutter_localizations` parameters and will
@@ -57,13 +53,11 @@ See `arb_translate --help` for more information.
 ### Custom model configuration
 You can use `arb_translate` with any model with an OpenAI-compatible API. To configure a custom model:
 
-1. Add `arb-translate-model-provider: custom` to `l10n.yaml` or specify as
-   command argument `--model-provider: custom`
-2. Add `arb-translate-custom-model: {your-model-name}` to `l10n.yaml` or specify
+1. Add `arb-translate-custom-model: {your-model-name}` to `l10n.yaml` or specify
    as command argument `custom-model: {your-model-name}`
-3. Add `arb-translate-custom-model-provider-base-url: {your-model-url}` to 
+2. Add `arb-translate-custom-model-provider-base-url: {your-model-url}` to 
    `l10n.yaml` or specify as command argument: `--custom-model-provider-base-url: {your-model-url}`
-4. (Optional) Set target batch size appropriately to model token count limits by
+3. (Optional) Set target batch size appropriately to model token count limits by
    adding `arb-translate-batch-size: {size}` to your `l10n.yaml` or specify as
    command argument `batch-size: {size}`. Batch size is the number of characters
    of ARB messages in a single batch and does not include the prompt or app

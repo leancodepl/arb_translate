@@ -79,7 +79,6 @@ class TranslateYamlResults {
 
 /// A class that parses YAML files containing translation options.
 class TranslateYamlParser {
-  static const _modelProviderKey = 'arb-translate-model-provider';
   static const _modelKey = 'arb-translate-model';
   static const _customModelKey = 'arb-translate-custom-model';
   static const _apiKeyKey = 'arb-translate-api-key';
@@ -113,10 +112,16 @@ class TranslateYamlParser {
       );
     }
 
+    final model = _tryReadModel(yamlNode, _modelKey);
+    final customModel = _tryReadString(yamlNode, _customModelKey);
+
+    final modelProvider = model?.provider ??
+        (customModel != null ? ModelProvider.customOpenAiCompatible : null);
+
     return TranslateYamlResults(
-      modelProvider: _tryReadModelProvider(yamlNode, _modelProviderKey),
-      model: _tryReadModel(yamlNode, _modelKey),
-      customModel: _tryReadString(yamlNode, _customModelKey),
+      modelProvider: modelProvider,
+      model: model,
+      customModel: customModel,
       arbDir: _tryReadUri(yamlNode, TranslateOptions.arbDirKey)?.path,
       customModelProviderBaseUrl:
           _tryReadUri(yamlNode, _customModelProviderBaseUrlKey).toString(),
@@ -129,21 +134,6 @@ class TranslateYamlParser {
       apiKey: _tryReadString(yamlNode, _apiKeyKey),
       useEscaping: _tryReadBool(yamlNode, TranslateOptions.useEscapingKey),
       relaxSyntax: _tryReadBool(yamlNode, TranslateOptions.relaxSyntaxKey),
-    );
-  }
-
-  static ModelProvider? _tryReadModelProvider(YamlMap yamlMap, String key) {
-    final value = _tryReadString(yamlMap, key);
-
-    if (value == null) {
-      return null;
-    }
-
-    return ModelProvider.values.firstWhere(
-      (provider) => provider.key == value,
-      orElse: () => throw FormatException(
-        'Expected "$key" to be equal to one of (${ModelProvider.values.map((provider) => provider.key).join(', ')}), instead was "$value"',
-      ),
     );
   }
 

@@ -21,29 +21,27 @@ enum ModelProvider {
 
 /// Enum representing the available models.
 enum Model {
-  gemini25Pro('gemini-2.5-pro', 'Gemini 2.5 Pro'),
-  gemini25Flash('gemini-2.5-flash', 'Gemini 2.5 Flash'),
-  gemini25FlashLite('gemini-2.5-flash-lite', 'Gemini 2.5 Flash Lite'),
-  gemini20Flash('gemini-2.0-flash', 'Gemini 2.0 Flash'),
-  gemini15Flash('gemini-1.5-flash', 'Gemini 1.5 Flash'),
-  gemini15Pro('gemini-1.5-pro', 'Gemini 1.5 Pro'),
-  gpt35Turbo('gpt-3.5-turbo', 'GPT-3.5 Turbo'),
-  gpt4('gpt-4', 'GPT-4'),
-  gpt4Turbo('gpt-4-turbo', 'GPT-4 Turbo'),
-  gpt4O('gpt-4o', 'GPT-4o'),
-  gpt5('gpt-5', 'GPT-5'),
-  gpt5Mini('gpt-5-mini', 'GPT-5 Mini'),
-  gpt5Nano('gpt-5-nano', 'GPT-5 Nano'),
+  gemini25Pro('gemini-2.5-pro', 'Gemini 2.5 Pro', ModelProvider.gemini),
+  gemini25Flash('gemini-2.5-flash', 'Gemini 2.5 Flash', ModelProvider.gemini),
+  gemini25FlashLite(
+      'gemini-2.5-flash-lite', 'Gemini 2.5 Flash Lite', ModelProvider.gemini),
+  gemini20Flash('gemini-2.0-flash', 'Gemini 2.0 Flash', ModelProvider.gemini),
+  gemini15Flash('gemini-1.5-flash', 'Gemini 1.5 Flash', ModelProvider.gemini),
+  gemini15Pro('gemini-1.5-pro', 'Gemini 1.5 Pro', ModelProvider.gemini),
+  gpt35Turbo('gpt-3.5-turbo', 'GPT-3.5 Turbo', ModelProvider.openAi),
+  gpt4('gpt-4', 'GPT-4', ModelProvider.openAi),
+  gpt4Turbo('gpt-4-turbo', 'GPT-4 Turbo', ModelProvider.openAi),
+  gpt4O('gpt-4o', 'GPT-4o', ModelProvider.openAi),
+  gpt5('gpt-5', 'GPT-5', ModelProvider.openAi),
+  gpt5Mini('gpt-5-mini', 'GPT-5 Mini', ModelProvider.openAi),
+  gpt5Nano('gpt-5-nano', 'GPT-5 Nano', ModelProvider.openAi),
   ;
 
-  const Model(this.key, this.name);
+  const Model(this.key, this.name, this.provider);
 
   final String key;
   final String name;
-
-  List<ModelProvider> get providers => geminiModels.contains(this)
-      ? [ModelProvider.gemini]
-      : [ModelProvider.openAi];
+  final ModelProvider provider;
 
   /// Returns a set of Gemini models.
   static Set<Model> get geminiModels => {
@@ -128,27 +126,8 @@ class TranslateOptions {
         yamlResults.modelProvider ??
         ModelProvider.gemini;
 
-    final model = argResults.model ??
-        yamlResults.model ??
-        (modelProvider == ModelProvider.openAi
-            ? Model.gpt4Turbo
-            : Model.gemini20Flash);
+    final model = argResults.model ?? yamlResults.model ?? Model.gemini25Flash;
     final customModel = argResults.customModel ?? yamlResults.customModel;
-
-    if (modelProvider != ModelProvider.customOpenAiCompatible) {
-      if (!model.providers.contains(modelProvider)) {
-        throw ModelProviderMismatchException();
-      }
-    } else {
-      if (customModel == null) {
-        throw MissingCustomModelException();
-      }
-    }
-
-    if (modelProvider == ModelProvider.customOpenAiCompatible &&
-        customModel == null) {
-      throw MissingCustomModelException();
-    }
 
     final customModelProviderBaseUrlString =
         argResults.customModelProviderBaseUrl ??
@@ -165,6 +144,10 @@ class TranslateOptions {
 
       if (customModelProviderBaseUrl == null) {
         throw InvalidCustomModelProviderBaseUrlException();
+      }
+    } else {
+      if (model.provider != modelProvider) {
+        throw ModelProviderMismatchException();
       }
     }
 
