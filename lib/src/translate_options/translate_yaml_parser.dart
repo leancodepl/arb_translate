@@ -107,12 +107,9 @@ class TranslateYamlParser {
       );
     }
 
-    final model = _tryReadModel(yamlNode, _modelKey);
-    final customModel = _tryReadString(yamlNode, _customModelKey);
-
     return TranslateYamlResults(
-      model: model,
-      customModel: customModel,
+      model: _tryReadModel(yamlNode, _modelKey),
+      customModel: _tryReadString(yamlNode, _customModelKey),
       arbDir: _tryReadUri(yamlNode, TranslateOptions.arbDirKey)?.path,
       customModelProviderBaseUrl:
           _tryReadUri(yamlNode, _customModelProviderBaseUrlKey).toString(),

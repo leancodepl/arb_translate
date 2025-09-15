@@ -100,24 +100,12 @@ class TranslateOptions {
       throw MissingApiKeyException();
     }
 
-    final specifiedModel = argResults.model ?? yamlResults.model;
-    final model = specifiedModel ?? Model.gemini25Flash;
     final customModel = argResults.customModel ?? yamlResults.customModel;
+    final model = argResults.model ?? yamlResults.model ?? Model.gemini25Flash;
 
-    final modelProvider = specifiedModel?.provider ??
-        (customModel != null
-            ? ModelProvider.customOpenAiCompatible
-            : ModelProvider.gemini);
-
-    if (modelProvider == ModelProvider.customOpenAiCompatible) {
-      if (customModel == null) {
-        throw MissingCustomModelException();
-      }
-    } else {
-      if (model.provider != modelProvider) {
-        throw ModelProviderMismatchException();
-      }
-    }
+    final modelProvider = customModel != null
+        ? ModelProvider.customOpenAiCompatible
+        : model.provider;
 
     final customModelProviderBaseUrlString =
         argResults.customModelProviderBaseUrl ??
