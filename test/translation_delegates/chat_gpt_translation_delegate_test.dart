@@ -31,7 +31,10 @@ void main() {
         );
       }
 
-      for (final model in Model.gptModels) {
+      final gptModels =
+          Model.values.where((model) => model.provider == ModelProvider.openAi);
+
+      for (final model in gptModels) {
         test(
           'returns a result from ${model.name}',
           () async {

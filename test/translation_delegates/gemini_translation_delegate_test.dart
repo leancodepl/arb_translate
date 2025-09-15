@@ -36,7 +36,10 @@ void main() {
             );
           }
 
-          for (final model in Model.geminiModels) {
+          final geminiModels = Model.values
+              .where((model) => model.provider == ModelProvider.gemini);
+
+          for (final model in geminiModels) {
             test(
               'returns a result from ${model.name}',
               () async {

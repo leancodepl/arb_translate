@@ -42,16 +42,6 @@ enum Model {
   final String key;
   final String name;
   final ModelProvider provider;
-
-  /// Returns a set of Gemini models.
-  static Set<Model> get geminiModels => Model.values
-      .where((model) => model.provider == ModelProvider.gemini)
-      .toSet();
-
-  /// Returns a set of GPT models.
-  static Set<Model> get gptModels => Model.values
-      .where((model) => model.provider == ModelProvider.openAi)
-      .toSet();
 }
 
 /// Class representing the options for translation.
