@@ -13,24 +13,6 @@ class MissingApiKeyException implements OptionException {
       'ARB_TRANSLATE_API_KEY environment variable';
 }
 
-/// Exception thrown when the selected model doesn't match the selected model
-/// provider.
-class ModelProviderMismatchException implements OptionException {
-  @override
-  String get message =>
-      'Selected model does not match selected model provider. Select different '
-      'model or different model provider';
-}
-
-/// Exception thrown when a custom model is missing.
-class MissingCustomModelException implements OptionException {
-  @override
-  String get message =>
-      'Using custom OpenAI compatible model provider requires a custom model. '
-      'Provide the model using custom-model argument in command line or using '
-      'arb-translate-custom-model property in l10n.yaml file';
-}
-
 /// Exception thrown when a custom model provider base URL is missing.
 class MissingCustomModelProviderBaseUrlException implements OptionException {
   @override
