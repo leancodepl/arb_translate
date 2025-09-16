@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:arb_translate/src/find_untranslated_resource_ids.dart';
 import 'package:arb_translate/src/flutter_tools/gen_l10n_types.dart';
 import 'package:arb_translate/src/prepare_untranslated_resources.dart';
-import 'package:arb_translate/src/translation_delegates/translate_exception.dart';
 import 'package:arb_translate/src/translate_options/translate_options.dart';
 import 'package:arb_translate/src/translation_delegates/chat_gpt_translation_delegate.dart';
 import 'package:arb_translate/src/translation_delegates/gemini_translation_delegate.dart';
+import 'package:arb_translate/src/translation_delegates/translate_exception.dart';
 import 'package:arb_translate/src/translation_delegates/translation_delegate.dart';
 import 'package:arb_translate/src/write_updated_bundle.dart';
 import 'package:file/file.dart';
@@ -25,16 +25,6 @@ Future<void> translate(
     ModelProvider.gemini => GeminiTranslationDelegate(
         model: options.model,
         apiKey: options.apiKey,
-        batchSize: options.batchSize,
-        context: options.context,
-        disableSafety: options.disableSafety,
-        useEscaping: options.useEscaping,
-        relaxSyntax: options.relaxSyntax,
-      ),
-    ModelProvider.vertexAi => GeminiTranslationDelegate.vertexAi(
-        model: options.model,
-        apiKey: options.apiKey,
-        projectUrl: options.vertexAiProjectUrl!,
         batchSize: options.batchSize,
         context: options.context,
         disableSafety: options.disableSafety,

@@ -7,7 +7,6 @@ import 'package:file/file.dart';
 /// Enum representing the available model providers.
 enum ModelProvider {
   gemini('gemini', 'Gemini'),
-  vertexAi('vertex-ai', 'Vertex AI'),
   openAi('open-ai', 'Open AI'),
   customOpenAiCompatible(
     'custom',
@@ -22,37 +21,26 @@ enum ModelProvider {
 
 /// Enum representing the available models.
 enum Model {
-  gemini10Pro('gemini-1.0-pro', 'Gemini 1.0 Pro'),
-  gemini15Pro('gemini-1.5-pro', 'Gemini 1.5 Pro'),
-  gemini15Flash('gemini-1.5-flash', 'Gemini 1.5 Flash'),
-  gpt35Turbo('gpt-3.5-turbo', 'GPT-3.5 Turbo'),
-  gpt4('gpt-4', 'GPT-4'),
-  gpt4Turbo('gpt-4-turbo', 'GPT-4 Turbo'),
-  gpt4O('gpt-4o', 'GPT-4o');
+  gemini25Pro('gemini-2.5-pro', 'Gemini 2.5 Pro', ModelProvider.gemini),
+  gemini25Flash('gemini-2.5-flash', 'Gemini 2.5 Flash', ModelProvider.gemini),
+  gemini25FlashLite(
+      'gemini-2.5-flash-lite', 'Gemini 2.5 Flash Lite', ModelProvider.gemini),
+  gemini20Flash('gemini-2.0-flash', 'Gemini 2.0 Flash', ModelProvider.gemini),
+  gemini15Flash('gemini-1.5-flash', 'Gemini 1.5 Flash', ModelProvider.gemini),
+  gemini15Pro('gemini-1.5-pro', 'Gemini 1.5 Pro', ModelProvider.gemini),
+  gpt35Turbo('gpt-3.5-turbo', 'GPT-3.5 Turbo', ModelProvider.openAi),
+  gpt4('gpt-4', 'GPT-4', ModelProvider.openAi),
+  gpt4Turbo('gpt-4-turbo', 'GPT-4 Turbo', ModelProvider.openAi),
+  gpt4O('gpt-4o', 'GPT-4o', ModelProvider.openAi),
+  gpt5('gpt-5', 'GPT-5', ModelProvider.openAi),
+  gpt5Mini('gpt-5-mini', 'GPT-5 Mini', ModelProvider.openAi),
+  gpt5Nano('gpt-5-nano', 'GPT-5 Nano', ModelProvider.openAi);
 
-  const Model(this.key, this.name);
+  const Model(this.key, this.name, this.provider);
 
   final String key;
   final String name;
-
-  List<ModelProvider> get providers => geminiModels.contains(this)
-      ? [ModelProvider.gemini, ModelProvider.vertexAi]
-      : [ModelProvider.openAi];
-
-  /// Returns a set of Gemini models.
-  static Set<Model> get geminiModels => {
-        Model.gemini10Pro,
-        Model.gemini15Pro,
-        Model.gemini15Flash,
-      };
-
-  /// Returns a set of GPT models.
-  static Set<Model> get gptModels => {
-        Model.gpt35Turbo,
-        Model.gpt4,
-        Model.gpt4Turbo,
-        Model.gpt4O,
-      };
+  final ModelProvider provider;
 }
 
 /// Class representing the options for translation.
@@ -62,7 +50,6 @@ class TranslateOptions {
     required this.model,
     required this.customModel,
     required this.apiKey,
-    required this.vertexAiProjectUrl,
     required this.customModelProviderBaseUrl,
     required bool? disableSafety,
     required this.context,
@@ -88,7 +75,6 @@ class TranslateOptions {
   final Model model;
   final String? customModel;
   final String apiKey;
-  final Uri? vertexAiProjectUrl;
   final Uri? customModelProviderBaseUrl;
   final bool disableSafety;
   final String? context;
@@ -114,49 +100,12 @@ class TranslateOptions {
       throw MissingApiKeyException();
     }
 
-    final modelProvider = argResults.modelProvider ??
-        yamlResults.modelProvider ??
-        ModelProvider.gemini;
-
-    final model = argResults.model ??
-        yamlResults.model ??
-        (modelProvider == ModelProvider.openAi
-            ? Model.gpt35Turbo
-            : Model.gemini10Pro);
     final customModel = argResults.customModel ?? yamlResults.customModel;
+    final model = argResults.model ?? yamlResults.model ?? Model.gemini25Flash;
 
-    if (modelProvider != ModelProvider.customOpenAiCompatible) {
-      if (!model.providers.contains(modelProvider)) {
-        throw ModelProviderMismatchException();
-      }
-    } else {
-      if (customModel == null) {
-        throw MissingCustomModelException();
-      }
-    }
-
-    if (modelProvider == ModelProvider.customOpenAiCompatible &&
-        customModel == null) {
-      throw MissingCustomModelException();
-    }
-
-    final vertexAiProjectUrlString =
-        argResults.vertexAiProjectUrl ?? yamlResults.vertexAiProjectUrl;
-    final Uri? vertexAiProjectUrl = vertexAiProjectUrlString != null
-        ? Uri.tryParse(vertexAiProjectUrlString)
-        : null;
-
-    if (modelProvider == ModelProvider.vertexAi) {
-      if (vertexAiProjectUrlString == null) {
-        throw MissingVertexAiProjectUrlException();
-      }
-
-      if (vertexAiProjectUrl == null ||
-          vertexAiProjectUrl.scheme != 'https' ||
-          !vertexAiProjectUrl.path.endsWith('models')) {
-        throw InvalidVertexAiProjectUrlException();
-      }
-    }
+    final modelProvider = customModel != null
+        ? ModelProvider.customOpenAiCompatible
+        : model.provider;
 
     final customModelProviderBaseUrlString =
         argResults.customModelProviderBaseUrl ??
@@ -188,7 +137,6 @@ class TranslateOptions {
       model: model,
       customModel: customModel,
       apiKey: apiKey,
-      vertexAiProjectUrl: vertexAiProjectUrl,
       disableSafety: argResults.disableSafety ?? yamlResults.disableSafety,
       context: context,
       arbDir: argResults.arbDir ??

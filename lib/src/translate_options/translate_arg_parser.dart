@@ -9,11 +9,9 @@ import 'package:collection/collection.dart';
 class TranslateArgResults {
   const TranslateArgResults({
     required this.help,
-    required this.modelProvider,
     required this.model,
     required this.customModel,
     required this.apiKey,
-    required this.vertexAiProjectUrl,
     required this.customModelProviderBaseUrl,
     required this.disableSafety,
     required this.batchSize,
@@ -28,9 +26,6 @@ class TranslateArgResults {
   /// Indicates whether the help option was specified.
   final bool? help;
 
-  /// The model provider for translation.
-  final ModelProvider? modelProvider;
-
   /// The model for translation.
   final Model? model;
 
@@ -39,9 +34,6 @@ class TranslateArgResults {
 
   /// The API key for translation.
   final String? apiKey;
-
-  /// The URL of the Vertex AI project.
-  final String? vertexAiProjectUrl;
 
   /// The custom model provider base URL for translation.
   final String? customModelProviderBaseUrl;
@@ -75,12 +67,10 @@ class TranslateArgResults {
 /// A class that parses command-line arguments for translation options.
 class TranslateArgParser {
   static const _helpKey = 'help';
-  static const _modelProviderKey = 'model-provider';
 
   static const _modelKey = 'model';
   static const _customModelKey = 'custom-model';
   static const _apiKeyKey = 'api-key';
-  static const _vertexAiProjectUrlKey = 'vertex-ai-project-url';
   static const _customModelProviderBaseUrlKey =
       'custom-model-provider-base-url';
   static const _disableSafetyKey = 'disable-safety';
@@ -97,23 +87,13 @@ class TranslateArgParser {
       negatable: false,
     )
     ..addOption(
-      _modelProviderKey,
-      help: 'The model provider to use for translation.',
-      allowed: ModelProvider.values.map((provider) => provider.key),
-      defaultsTo: ModelProvider.gemini.key,
-      allowedHelp: {
-        for (final model in Model.values) model.key: model.name,
-      },
-    )
-    ..addOption(
       _modelKey,
       help: 'The model to use for translation.',
       allowed: Model.values.map((model) => model.key),
-      defaultsTo: Model.gemini10Pro.key,
+      defaultsTo: Model.gemini25Flash.key,
       allowedHelp: {
         for (final model in Model.values)
-          model.key:
-              '${model.name} (${model.providers.map((provider) => provider.name).join(', ')})',
+          model.key: '${model.name} (${model.provider.name})',
       },
     )
     ..addOption(
@@ -124,10 +104,6 @@ class TranslateArgParser {
     ..addOption(
       _apiKeyKey,
       help: 'API key used to make translation requests.',
-    )
-    ..addOption(
-      _vertexAiProjectUrlKey,
-      help: 'The URL of the Vertex AI project to use for translation.',
     )
     ..addOption(
       _customModelProviderBaseUrlKey,
@@ -198,30 +174,25 @@ class TranslateArgParser {
       );
     }
 
-    final modelProvider = rawResults.wasParsed(_modelProviderKey)
-        ? ModelProvider.values.firstWhereOrNull(
-            (provider) => provider.key == rawResults[_modelProviderKey],
-          )
-        : null;
     final model = rawResults.wasParsed(_modelKey)
         ? Model.values.firstWhereOrNull(
             (model) => model.key == rawResults[_modelKey],
           )
         : null;
+
     final excludeLocales = rawResults.wasParsed(_excludeLocalesKey)
         ? rawResults[_excludeLocalesKey] as List<String>
         : null;
+
     final batchSize = rawResults.wasParsed(_batchSizeKey)
         ? int.parse(rawResults[_batchSizeKey] as String)
         : null;
 
     return TranslateArgResults(
       help: _getBoolIfParsed(rawResults, _helpKey),
-      modelProvider: modelProvider,
       model: model,
       customModel: rawResults[_customModelKey] as String?,
       apiKey: rawResults[_apiKeyKey] as String?,
-      vertexAiProjectUrl: rawResults[_vertexAiProjectUrlKey] as String?,
       customModelProviderBaseUrl:
           rawResults[_customModelProviderBaseUrlKey] as String?,
       disableSafety: _getBoolIfParsed(rawResults, _disableSafetyKey),
