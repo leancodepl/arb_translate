@@ -1,4 +1,4 @@
-name: run-tests
+name: test
 
 on:
   push:
@@ -24,5 +24,11 @@ jobs:
       - name: Get dependencies
         run: dart pub get
 
+      - name: Analyze code
+        run: dart analyze
+
       - name: Run tests (for now only translation options)
         run: dart test test/translation_options_test.dart
+
+      - name: Dry run pub publish
+        run: dart pub publish --dry-run || true
