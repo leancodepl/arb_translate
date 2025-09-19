@@ -3,26 +3,25 @@ import 'package:file/memory.dart';
 import 'package:test/test.dart';
 
 void main() {
+  const argResultsApiKey = 'argResultsApiKey';
+  const argResultsDisableSafety = true;
+  const argResultsContext = 'argResultsContext';
+  const argResultsExcludeLocales = ['pl'];
+  const argResultsBatchSize = 4096;
+  const argResultsArbDir = 'argResultsArbDir';
+  const argResultsTemplateArbFile = 'argResultsTemplateArbFile';
+  const argResultsUseEscaping = true;
+  const argResultsRelaxSyntax = true;
   group(
     'TranslateOptions',
     () {
       test(
         'resolve returns options with values from argResults over yamlResults',
         () {
-          const argResultsModelProvider = ModelProvider.gemini;
+          const argResultsModel = Model.gemini25Flash;
           const argResultsCustomModelProviderUrl =
               'http://argResultsCustomModelProviderBaseUrl';
-          const argResultsModel = Model.gemini25Flash;
           const argResultsCustomModel = 'argResultsCustomModel';
-          const argResultsApiKey = 'argResultsApiKey';
-          const argResultsDisableSafety = true;
-          const argResultsContext = 'argResultsContext';
-          const argResultsExcludeLocales = ['pl'];
-          const argResultsBatchSize = 4096;
-          const argResultsArbDir = 'argResultsArbDir';
-          const argResultsTemplateArbFile = 'argResultsTemplateArbFile';
-          const argResultsUseEscaping = true;
-          const argResultsRelaxSyntax = true;
 
           final argResults = TranslateArgResults(
             help: false,
@@ -64,11 +63,6 @@ void main() {
           expect(
             translateOptions,
             isA<TranslateOptions>()
-                .having(
-                  (options) => options.modelProvider,
-                  'modelProvider',
-                  argResultsModelProvider,
-                )
                 .having(
                   (options) => options.customModelProviderBaseUrl,
                   'customModelProviderBaseUrl',
@@ -132,6 +126,104 @@ void main() {
           );
         },
       );
+    },
+  );
+  group(
+    'modelProvider resolving',
+    () {
+      test('resolves gemini provider', () {
+        const argResultsModel = Model.gemini25Flash;
+        final argResults = TranslateArgResults(
+          help: false,
+          customModelProviderBaseUrl: null,
+          model: argResultsModel,
+          customModel: null,
+          apiKey: argResultsApiKey,
+          disableSafety: argResultsDisableSafety,
+          context: argResultsContext,
+          excludeLocales: argResultsExcludeLocales,
+          batchSize: argResultsBatchSize,
+          arbDir: argResultsArbDir,
+          templateArbFile: argResultsTemplateArbFile,
+          useEscaping: argResultsUseEscaping,
+          relaxSyntax: argResultsRelaxSyntax,
+        );
+        final yamlResults = TranslateYamlResults.empty();
+        final translateOptions = TranslateOptions.resolve(
+          MemoryFileSystem(),
+          argResults,
+          yamlResults,
+        );
+        expect(
+            translateOptions,
+            isA<TranslateOptions>().having((options) => options.modelProvider,
+                'modelProvider', ModelProvider.gemini));
+      });
+      test('resolves openAI provider', () {
+        const argResultsModel = Model.gpt5Mini;
+        final argResults = TranslateArgResults(
+          help: false,
+          customModelProviderBaseUrl: null,
+          model: argResultsModel,
+          customModel: null,
+          apiKey: argResultsApiKey,
+          disableSafety: argResultsDisableSafety,
+          context: argResultsContext,
+          excludeLocales: argResultsExcludeLocales,
+          batchSize: argResultsBatchSize,
+          arbDir: argResultsArbDir,
+          templateArbFile: argResultsTemplateArbFile,
+          useEscaping: argResultsUseEscaping,
+          relaxSyntax: argResultsRelaxSyntax,
+        );
+        final yamlResults = TranslateYamlResults.empty();
+        final translateOptions = TranslateOptions.resolve(
+          MemoryFileSystem(),
+          argResults,
+          yamlResults,
+        );
+        expect(
+            translateOptions,
+            isA<TranslateOptions>().having((options) => options.modelProvider,
+                'modelProvider', ModelProvider.openAi));
+      });
+      test(
+          'resolves customOpenAiCompatible provider with custom model taking precedence',
+          () {
+        const argResultsModel = Model.gemini25Flash;
+        const argResultsCustomModelProviderUrl =
+            'http://argResultsCustomModelProviderBaseUrl';
+        const argResultsCustomModel = 'argResultsCustomModel';
+        final argResults = TranslateArgResults(
+          help: false,
+          customModelProviderBaseUrl: argResultsCustomModelProviderUrl,
+          model: argResultsModel,
+          customModel: argResultsCustomModel,
+          apiKey: argResultsApiKey,
+          disableSafety: argResultsDisableSafety,
+          context: argResultsContext,
+          excludeLocales: argResultsExcludeLocales,
+          batchSize: argResultsBatchSize,
+          arbDir: argResultsArbDir,
+          templateArbFile: argResultsTemplateArbFile,
+          useEscaping: argResultsUseEscaping,
+          relaxSyntax: argResultsRelaxSyntax,
+        );
+        final yamlResults = TranslateYamlResults.empty();
+        final translateOptions = TranslateOptions.resolve(
+          MemoryFileSystem(),
+          argResults,
+          yamlResults,
+        );
+        expect(
+          translateOptions,
+          isA<TranslateOptions>()
+              .having((o) => o.modelProvider, 'modelProvider',
+                  ModelProvider.customOpenAiCompatible)
+              .having(
+                  (o) => o.customModel, 'customModel', argResultsCustomModel),
+        );
+      });
     },
   );
 }
