@@ -26,4 +26,3 @@ jobs:
 
       - name: Run tests (for now only translation options)
         run: dart test test/translation_options_test.dart
-

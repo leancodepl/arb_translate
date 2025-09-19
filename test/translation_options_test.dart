@@ -12,6 +12,7 @@ void main() {
   const argResultsTemplateArbFile = 'argResultsTemplateArbFile';
   const argResultsUseEscaping = true;
   const argResultsRelaxSyntax = true;
+
   group(
     'TranslateOptions',
     () {
@@ -128,11 +129,13 @@ void main() {
       );
     },
   );
+
   group(
     'modelProvider resolving',
     () {
       test('resolves gemini provider', () {
         const argResultsModel = Model.gemini25Flash;
+
         final argResults = TranslateArgResults(
           help: false,
           customModelProviderBaseUrl: null,
@@ -149,18 +152,22 @@ void main() {
           relaxSyntax: argResultsRelaxSyntax,
         );
         final yamlResults = TranslateYamlResults.empty();
+
         final translateOptions = TranslateOptions.resolve(
           MemoryFileSystem(),
           argResults,
           yamlResults,
         );
+
         expect(
             translateOptions,
             isA<TranslateOptions>().having((options) => options.modelProvider,
                 'modelProvider', ModelProvider.gemini));
       });
+
       test('resolves openAI provider', () {
         const argResultsModel = Model.gpt5Mini;
+
         final argResults = TranslateArgResults(
           help: false,
           customModelProviderBaseUrl: null,
@@ -177,16 +184,19 @@ void main() {
           relaxSyntax: argResultsRelaxSyntax,
         );
         final yamlResults = TranslateYamlResults.empty();
+
         final translateOptions = TranslateOptions.resolve(
           MemoryFileSystem(),
           argResults,
           yamlResults,
         );
+
         expect(
             translateOptions,
             isA<TranslateOptions>().having((options) => options.modelProvider,
                 'modelProvider', ModelProvider.openAi));
       });
+
       test(
           'resolves customOpenAiCompatible provider with custom model taking precedence',
           () {
@@ -194,6 +204,7 @@ void main() {
         const argResultsCustomModelProviderUrl =
             'http://argResultsCustomModelProviderBaseUrl';
         const argResultsCustomModel = 'argResultsCustomModel';
+
         final argResults = TranslateArgResults(
           help: false,
           customModelProviderBaseUrl: argResultsCustomModelProviderUrl,
@@ -210,11 +221,13 @@ void main() {
           relaxSyntax: argResultsRelaxSyntax,
         );
         final yamlResults = TranslateYamlResults.empty();
+
         final translateOptions = TranslateOptions.resolve(
           MemoryFileSystem(),
           argResults,
           yamlResults,
         );
+
         expect(
           translateOptions,
           isA<TranslateOptions>()
