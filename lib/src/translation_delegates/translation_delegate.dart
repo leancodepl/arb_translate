@@ -5,6 +5,7 @@ import 'package:arb_translate/src/flutter_tools/fakes/fake_app_resource_bundle_c
 import 'package:arb_translate/src/flutter_tools/gen_l10n_types.dart';
 import 'package:arb_translate/src/flutter_tools/localizations_utils.dart';
 import 'package:arb_translate/src/translation_delegates/translate_exception.dart';
+import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 
 abstract class TranslationDelegate {
@@ -111,41 +112,40 @@ abstract class TranslationDelegate {
         continue;
       }
 
-      final result = _tryParseResponse(resources, response);
+      try {
+        final result = _tryParseResponse(resources, response);
 
-      if (result == null) {
+        if (!validateResults(resources, result)) {
+          retryCount++;
+
+          print(
+            'Placeholder validation failed for batch $batchName, retrying '
+            '$retryCount/$maxRetryCount...',
+          );
+
+          if (retryCount > maxRetryCount) {
+            throw PlaceholderValidationException();
+          }
+
+          continue;
+        }
+
+        print('Translated batch $batchName');
+
+        return result;
+      } on ParsingException catch (e) {
         retryCount++;
 
         if (retryCount > maxRetryCount) {
           throw ResponseParsingException();
         }
 
-        print(
-          'Failed to parse response for $batchName, retrying '
-          '$retryCount/$maxRetryCount...',
-        );
+        print('Failed to parse response for $batchName, retrying '
+            '$retryCount/$maxRetryCount...\n'
+            'Reason: $e');
 
         continue;
       }
-
-      if (!validateResults(resources, result)) {
-        retryCount++;
-
-        print(
-          'Placeholder validation failed for batch $batchName, retrying '
-          '$retryCount/$maxRetryCount...',
-        );
-
-        if (retryCount > maxRetryCount) {
-          throw PlaceholderValidationException();
-        }
-
-        continue;
-      }
-
-      print('Translated batch $batchName');
-
-      return result;
     }
   }
 
@@ -154,12 +154,12 @@ abstract class TranslationDelegate {
     LocaleInfo locale,
   );
 
-  Map<String, String>? _tryParseResponse(
+  Map<String, String> _tryParseResponse(
     Map<String, Object?> resources,
     String? response,
   ) {
     if (response == null) {
-      return null;
+      throw EmptyResponseException();
     }
 
     final trimmedResponse = response.substring(
@@ -169,15 +169,20 @@ abstract class TranslationDelegate {
 
     try {
       responseJson = json.decode(trimmedResponse);
-    } catch (e) {
-      return null;
+    } on FormatException catch (e) {
+      throw InvalidJsonException(e);
     }
 
     final messageResources =
         resources.keys.where((key) => !key.startsWith('@'));
 
-    if (messageResources.any((key) => responseJson[key] is! String)) {
-      return null;
+    final invalidJsonKey = messageResources
+        .firstWhereOrNull((key) => responseJson[key] is! String);
+    if (invalidJsonKey != null) {
+      throw InvalidResponseValueException(
+        key: invalidJsonKey,
+        value: responseJson[invalidJsonKey],
+      );
     }
 
     return {
@@ -217,5 +222,40 @@ abstract class TranslationDelegate {
     }
 
     return true;
+  }
+}
+
+sealed class ParsingException implements Exception {}
+
+final class EmptyResponseException extends ParsingException {
+  @override
+  String toString() {
+    return 'JSON response was null';
+  }
+}
+
+final class InvalidJsonException implements ParsingException {
+  final FormatException inner;
+
+  const InvalidJsonException(this.inner);
+
+  @override
+  String toString() {
+    return 'JSON response could not be decoded due to error: $inner';
+  }
+}
+
+final class InvalidResponseValueException<T> implements ParsingException {
+  final T value;
+  final String key;
+
+  const InvalidResponseValueException({
+    required this.key,
+    required this.value,
+  });
+
+  @override
+  String toString() {
+    return 'JSON response:$value of key $key could not be casted to the type String';
   }
 }
