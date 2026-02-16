@@ -1,3 +1,7 @@
+<a href="https://leancode.co/?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate" align="center">
+  <img alt="arb_translate" src="https://github.com/user-attachments/assets/fbb73524-377a-420e-9a1c-e9c896822a84" />
+</a>
+
 # arb_translate
 
 [![arb_translate on pub.dev][pub_badge]][pub_link]
