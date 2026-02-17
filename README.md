@@ -1,5 +1,5 @@
 <a href="https://leancode.co/?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate" align="center">
-  <img alt="arb_translate" src="https://github.com/user-attachments/assets/74881fe3-4937-492a-8dc8-2a8a93d03dc3" />
+  <img alt="arb_translate" src="https://github.com/user-attachments/assets/2343d5db-68a8-42e7-82cf-24eaa87ce55c" />
 </a>
 
 # arb_translate
