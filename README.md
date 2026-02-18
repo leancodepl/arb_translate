@@ -2,6 +2,12 @@
   <img alt="arb_translate" src="https://github.com/user-attachments/assets/2343d5db-68a8-42e7-82cf-24eaa87ce55c" />
 </a>
 
+<div align="center">
+
+[![Banner][banner-img]][leancode-landing]
+
+</div>
+
 # arb_translate
 
 [![arb_translate on pub.dev][pub_badge]][pub_link]
@@ -82,9 +88,6 @@ Or without `l10n.yaml` file
 $ arb_translate --arb-dir...
 ```
 
-[pub_badge]: https://img.shields.io/pub/v/arb_translate.svg
-[pub_link]: https://pub.dartlang.org/packages/arb_translate
-
 ## Read more
 If you want to know how we made this tool and what challenges we had,
 [read the story](https://leancode.co/blog/flutter-app-localization-with-ai??utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate).
@@ -92,19 +95,18 @@ If you want to know how we made this tool and what challenges we had,
 ---
 
 ## 🛠️ Maintained by LeanCode
-
 <div align="center">
-  <a href="https://leancode.co/?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate">
-    <img src="https://leancodepublic.blob.core.windows.net/public/wide.png" alt="LeanCode Logo" height="100" />
-  </a>
+
+  [<img src="https://leancodepublic.blob.core.windows.net/public/wide.png" alt="LeanCode Logo" height="100" />][leancode-landing]
+
 </div>
 
-This package is built with 💙 by **[LeanCode](https://leancode.co?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate)**.
+This package is built with 💙 by **[LeanCode][leancode-landing]**.
 We are **top-tier experts** focused on Flutter Enterprise solutions.
 
 ### Why LeanCode?
 
-- **Creators of [Patrol](https://patrol.leancode.co/?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate)** – the next-gen testing framework for Flutter.
+- **Creators of [Patrol][patrol-landing]** – the next-gen testing framework for Flutter.
 
 - **Production-Ready** – We use this package in apps with millions of users.
 - **Full-Cycle Product Development** – We take your product from scratch to long-term maintenance.
@@ -114,8 +116,17 @@ We are **top-tier experts** focused on Flutter Enterprise solutions.
 
   **Need help with your Flutter project?**
 
-  [**👉 Hire our team**](https://leancode.co/get-estimate?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate)
+  [**👉 Hire our team**][leancode-estimate]
   &nbsp;&nbsp;•&nbsp;&nbsp;
-  [Check our other packages](https://pub.dev/packages?q=publisher%3Aleancode.co&sort=downloads)
+  [Check our other packages][leancode-packages]
 
 </div>
+
+
+[pub_badge]: https://img.shields.io/pub/v/arb_translate.svg
+[pub_link]: https://pub.dartlang.org/packages/arb_translate
+[banner-img]: https://raw.githubusercontent.com/leancodepl/arb_translate/refs/heads/main/docs/imgs/banner.png
+[leancode-landing]: https://leancode.co/?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate
+[leancode-estimate]: https://leancode.co/get-estimate?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate
+[leancode-packages]: https://pub.dev/packages?q=publisher%3Aleancode.co&sort=downloads
+[patrol-landing]: https://patrol.leancode.co/?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate
