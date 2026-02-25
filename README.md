@@ -1,7 +1,3 @@
-<a href="https://leancode.co/?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate" align="center">
-  <img alt="arb_translate" src="https://github.com/user-attachments/assets/2343d5db-68a8-42e7-82cf-24eaa87ce55c" />
-</a>
-
 <div align="center">
 
 [![Banner][banner-img]][leancode-landing]
@@ -125,7 +121,7 @@ We are **top-tier experts** focused on Flutter Enterprise solutions.
 
 [pub_badge]: https://img.shields.io/pub/v/arb_translate.svg
 [pub_link]: https://pub.dartlang.org/packages/arb_translate
-[banner-img]: https://raw.githubusercontent.com/leancodepl/arb_translate/refs/heads/main/docs/imgs/banner.png
+[banner-img]: https://raw.githubusercontent.com/leancodepl/arb_translate/refs/heads/main/doc/imgs/banner.png
 [leancode-landing]: https://leancode.co/?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate
 [leancode-estimate]: https://leancode.co/get-estimate?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate
 [leancode-packages]: https://pub.dev/packages?q=publisher%3Aleancode.co&sort=downloads
