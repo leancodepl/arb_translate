@@ -1,10 +1,16 @@
+<div align="center">
+
+[![Banner][banner-img]][leancode-landing]
+
+</div>
+
 # arb_translate
 
 [![arb_translate on pub.dev][pub_badge]][pub_link]
 
 A command-line tool for automatically generating missing translations to ARB
 files using Google Gemini or OpenAI ChatGPT by
-[LeanCode](https://leancode.co/?utm_source=readme&utm_medium=arb_translate_package)
+[LeanCode](https://leancode.co/?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate)
 
 ## Installation
 
@@ -78,20 +84,45 @@ Or without `l10n.yaml` file
 $ arb_translate --arb-dir...
 ```
 
-[pub_badge]: https://img.shields.io/pub/v/arb_translate.svg
-[pub_link]: https://pub.dartlang.org/packages/arb_translate
-
 ## Read more
 If you want to know how we made this tool and what challenges we had,
-[read the story](https://leancode.co/blog/flutter-app-localization-with-ai?utm_source=readme&utm_medium=arb_translate_package).
+[read the story](https://leancode.co/blog/flutter-app-localization-with-ai??utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate).
 
-##
+---
 
-<p align="center">
-   <a href="https://leancode.co/?utm_source=readme&utm_medium=arb_translate_package">
-      <img alt="LeanCode" src="https://leancodepublic.blob.core.windows.net/public/wide.png" width="300"/>
-   </a>
-   <p align="center">
-   Built with ☕️ by <a href="https://leancode.co/?utm_source=readme&utm_medium=arb_translate_package">LeanCode</a>
-   </p>
-</p>
+## 🛠️ Maintained by LeanCode
+<div align="center">
+
+  [<img src="https://leancodepublic.blob.core.windows.net/public/wide.png" alt="LeanCode Logo" height="100" />][leancode-landing]
+
+</div>
+
+This package is built with 💙 by **[LeanCode][leancode-landing]**.
+We are **top-tier experts** focused on Flutter Enterprise solutions.
+
+### Why LeanCode?
+
+- **Creators of [Patrol][patrol-landing]** – the next-gen testing framework for Flutter.
+
+- **Production-Ready** – We use this package in apps with millions of users.
+- **Full-Cycle Product Development** – We take your product from scratch to long-term maintenance.
+
+<div align="center">
+  <br />
+
+  **Need help with your Flutter project?**
+
+  [**👉 Hire our team**][leancode-estimate]
+  &nbsp;&nbsp;•&nbsp;&nbsp;
+  [Check our other packages][leancode-packages]
+
+</div>
+
+
+[pub_badge]: https://img.shields.io/pub/v/arb_translate.svg
+[pub_link]: https://pub.dartlang.org/packages/arb_translate
+[banner-img]: https://raw.githubusercontent.com/leancodepl/arb_translate/refs/heads/main/doc/imgs/banner.png
+[leancode-landing]: https://leancode.co/?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate
+[leancode-estimate]: https://leancode.co/get-estimate?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate
+[leancode-packages]: https://pub.dev/packages?q=publisher%3Aleancode.co&sort=downloads
+[patrol-landing]: https://patrol.leancode.co/?utm_source=github.com&utm_medium=referral&utm_campaign=arb-translate
