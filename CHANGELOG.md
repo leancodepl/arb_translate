@@ -1,3 +1,7 @@
+## 1.3.1
+- Added Gemini-3-flash-preview, Gemini-3.1-pro-preview, and Gemini-3.1-flash-lite-preview support
+- Updated README.md
+
 ## 1.3.0
 - Added Gemini-2.5-pro, Gemini-2.5-flash (new default for Gemini), and Gemini-2.5-flash-lite Support
 - Updated default Gemini model from Gemini-2.0-flash to Gemini-2.5-flash
