@@ -25,7 +25,7 @@ dependencies:
   file: ^7.0.1
   google_generative_ai: ^0.4.7
   http: ^1.6.0
-  intl: ^0.20.3
+  intl: ^0.20.2
   meta: ^1.18.0
   yaml: ^3.1.3
 
